@@ -148,7 +148,8 @@ const revealBtn      = document.getElementById('reveal-btn');
 revealBtn.addEventListener('click', () => {
   revealed = true;
   surpriseScreen.classList.add('hidden');
-  setTimeout(() => { if (!musicPlaying) toggleMusic(); }, 900);
+  userWantsMusic = true;
+  playMusic();
 });
 
 
@@ -408,87 +409,87 @@ document.querySelectorAll('.nav-arrow').forEach(btn => {
 
 
 /* ──────────────────────────────────────────
-   MUSIC ENGINE (Web Audio API)
+   MUSIC ENGINE (YouTube Player: 1mVogXexCZg)
 ────────────────────────────────────────── */
-let audioCtx     = null;
-let musicPlaying = false;
-let masterGain   = null;
-let musicTimeout = null;
+const YT_VIDEO_ID  = '1mVogXexCZg';
+let ytPlayer       = null;
+let ytReady        = false;
+let musicPlaying   = false;
+let userWantsMusic = true; // Attempt playback upon access and user interaction
 
-const MELODY = [
-  [392,0.75],[392,0.25],[440,1],[392,1],[523,1],[494,2],
-  [392,0.75],[392,0.25],[440,1],[392,1],[587,1],[523,2],
-  [392,0.75],[392,0.25],[784,1],[659,1],[523,1],[494,1],[440,2],
-  [698,0.75],[698,0.25],[659,1],[523,1],[587,1],[523,2],
-];
-const BEAT_MS = 450;
-const CHORD   = [196, 246.94, 293.66];
-
-function initAudio() {
-  if (audioCtx) return;
-  audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
-  masterGain = audioCtx.createGain();
-  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-  masterGain.connect(audioCtx.destination);
-}
-
-function scheduleSong(startTime) {
-  let t = startTime;
-  MELODY.forEach(([freq, dur]) => {
-    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-    const harm = audioCtx.createOscillator(), hg   = audioCtx.createGain();
-    osc.type  = 'triangle'; osc.frequency.value = freq;
-    harm.type = 'sine';     harm.frequency.value = freq * 0.5;
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.55, t + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + dur*(BEAT_MS/1000) - 0.03);
-    hg.gain.setValueAtTime(0.18, t);
-    hg.gain.exponentialRampToValueAtTime(0.001, t + dur*(BEAT_MS/1000) - 0.03);
-    osc.connect(gain);  gain.connect(masterGain);
-    harm.connect(hg);   hg.connect(masterGain);
-    osc.start(t); harm.start(t);
-    osc.stop(t + dur*(BEAT_MS/1000)); harm.stop(t + dur*(BEAT_MS/1000));
-    if (Math.random() > 0.6) {
-      CHORD.forEach(cf => {
-        const co = audioCtx.createOscillator(), cg = audioCtx.createGain();
-        co.type = 'sine'; co.frequency.value = cf;
-        cg.gain.setValueAtTime(0, t);
-        cg.gain.linearRampToValueAtTime(0.06, t + 0.1);
-        cg.gain.exponentialRampToValueAtTime(0.001, t + dur*(BEAT_MS/1000));
-        co.connect(cg); cg.connect(masterGain);
-        co.start(t); co.stop(t + dur*(BEAT_MS/1000));
-      });
+window.onYouTubeIframeAPIReady = function() {
+  ytPlayer = new YT.Player('yt-player', {
+    videoId: YT_VIDEO_ID,
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      loop: 1,
+      playlist: YT_VIDEO_ID,
+      playsinline: 1,
+      modestbranding: 1
+    },
+    events: {
+      onReady: (event) => {
+        ytReady = true;
+        // Attempt autoplay as soon as accessed
+        event.target.playVideo();
+        if (userWantsMusic) {
+          event.target.playVideo();
+        }
+      },
+      onStateChange: (event) => {
+        // YT.PlayerState: PLAYING = 1, PAUSED = 2, ENDED = 0
+        if (event.data === 1) {
+          musicPlaying = true;
+          document.getElementById('music-icon').textContent = '⏸';
+          document.getElementById('equalizer').classList.remove('paused');
+        } else if (event.data === 2 || event.data === 0) {
+          musicPlaying = false;
+          document.getElementById('music-icon').textContent = '▶';
+          document.getElementById('equalizer').classList.add('paused');
+          if (event.data === 0 && userWantsMusic && ytPlayer) {
+            ytPlayer.playVideo();
+          }
+        }
+      },
+      onError: (err) => {
+        console.warn('YouTube Player note:', err);
+      }
     }
-    t += dur * (BEAT_MS / 1000);
   });
-  return t;
+};
+
+function playMusic() {
+  userWantsMusic = true;
+  if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+    ytPlayer.playVideo();
+  }
 }
 
-function startMusic() {
-  initAudio();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(0.9, audioCtx.currentTime + 0.5);
-  const songEnd = scheduleSong(audioCtx.currentTime + 0.1);
-  const delay   = (songEnd - audioCtx.currentTime) * 1000 + 200;
-  musicTimeout  = setTimeout(() => { if (musicPlaying) startMusic(); }, delay);
-}
-
-function stopMusic() {
-  if (!audioCtx) return;
-  clearTimeout(musicTimeout);
-  masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
+function pauseMusic() {
+  userWantsMusic = false;
+  if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+    ytPlayer.pauseVideo();
+  }
 }
 
 function toggleMusic() {
-  musicPlaying = !musicPlaying;
-  document.getElementById('music-icon').textContent = musicPlaying ? '⏸' : '▶';
-  document.getElementById('equalizer').classList.toggle('paused', !musicPlaying);
-  if (musicPlaying) startMusic(); else stopMusic();
+  if (musicPlaying) pauseMusic();
+  else              playMusic();
 }
 
 document.getElementById('music-btn').addEventListener('click', toggleMusic);
+
+// Unlock autoplay on first touch / click gesture if restricted by browser policy
+function attemptAutoplayUnlock() {
+  if (!musicPlaying && userWantsMusic && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+    ytPlayer.playVideo();
+  }
+}
+document.addEventListener('click', attemptAutoplayUnlock, { once: true });
+document.addEventListener('touchstart', attemptAutoplayUnlock, { once: true });
 
 
 /* ──────────────────────────────────────────
