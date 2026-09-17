@@ -58,6 +58,14 @@
   <nav id="dot-nav" aria-label="Slide navigation" role="tablist"></nav>
   <div id="slide-counter" aria-live="polite" aria-atomic="true">1 / 6</div>
 
+  <!-- ── Center Next Button ── -->
+  <div id="center-nav-wrap">
+    <button id="center-next-btn" class="center-next-btn" aria-label="Go to next slide">
+      <span id="center-next-text">Next ✨</span>
+      <span class="center-next-arrow" aria-hidden="true">→</span>
+    </button>
+  </div>
+
   <!-- ══════════════════ SLIDES ══════════════════ -->
   <main id="slides-container">
     <div id="slides-wrapper">
@@ -70,7 +78,10 @@
           <span class="badge">September 2026</span>
           <h1 class="display-name">Unc.nhii</h1>
           <p class="hero-sub">is turning <em>19</em> today ✨</p>
-          <button id="confetti-btn" class="primary-btn">🎊 Celebrate!</button>
+          <div class="hero-actions">
+            <button id="confetti-btn" class="primary-btn">🎊 Celebrate!</button>
+            <button id="hero-next-btn" class="primary-btn hero-next-btn">Next Story ✨ →</button>
+          </div>
         </div>
       </section>
 

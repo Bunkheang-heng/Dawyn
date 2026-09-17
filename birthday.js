@@ -19,6 +19,9 @@ const nextBtn    = document.getElementById('nav-next');
 const dotNav     = document.getElementById('dot-nav');
 const counter    = document.getElementById('slide-counter');
 const progressBar = document.getElementById('progress-bar');
+const centerNextBtn  = document.getElementById('center-next-btn');
+const centerNextText = document.getElementById('center-next-text');
+const heroNextBtn    = document.getElementById('hero-next-btn');
 
 // Build dot indicators
 const dots = [];
@@ -38,9 +41,10 @@ function goTo(n) {
   currentSlide = n;
   wrapper.style.transform = `translateX(${-n * 100}vw)`;
   updateNavUI();
-  // Burst sparkles from active arrow side
+  // Burst sparkles from active button
+  if (centerNextBtn) burstFromBtn(centerNextBtn);
   if (n > prev) burstFromBtn(nextBtn);
-  else           burstFromBtn(prevBtn);
+  else if (n < prev) burstFromBtn(prevBtn);
   onSlideEnter(n);
 }
 
@@ -57,6 +61,17 @@ function updateNavUI() {
     ? 0
     : (currentSlide / (TOTAL_SLIDES - 1)) * 100;
   progressBar.style.width = `${pct}%`;
+
+  // Center Next button label
+  if (centerNextText && centerNextBtn) {
+    if (currentSlide === TOTAL_SLIDES - 1) {
+      centerNextText.textContent = 'Back to Start ↺';
+      centerNextBtn.setAttribute('aria-label', 'Return to first slide');
+    } else {
+      centerNextText.textContent = 'Next ✨';
+      centerNextBtn.setAttribute('aria-label', `Go to slide ${currentSlide + 2}`);
+    }
+  }
 }
 
 function onSlideEnter(n) {
@@ -85,6 +100,21 @@ function onSlideEnter(n) {
 
 prevBtn.addEventListener('click', () => goTo(currentSlide - 1));
 nextBtn.addEventListener('click', () => goTo(currentSlide + 1));
+
+if (centerNextBtn) {
+  centerNextBtn.addEventListener('click', () => {
+    if (currentSlide < TOTAL_SLIDES - 1) {
+      goTo(currentSlide + 1);
+    } else {
+      goTo(0);
+      if (typeof launchConfetti === 'function') launchConfetti();
+    }
+  });
+}
+
+if (heroNextBtn) {
+  heroNextBtn.addEventListener('click', () => goTo(1));
+}
 
 // Keyboard navigation
 document.addEventListener('keydown', e => {
