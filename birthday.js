@@ -560,9 +560,10 @@ const lightboxCap   = document.getElementById('lightbox-caption');
 const lightboxClose = document.getElementById('lightbox-close');
 
 const photoData = [
-  { src: 'asset/IMG_0236.jpg', caption: 'Singapore 🇸🇬 — First time we met under the city lights' },
-  { src: 'asset/IMG_0180.jpg', caption: 'Vietnam 🇻🇳 — Brunch, coffee dates & sweet moments' },
-  { src: 'asset/IMG_0225.jpg', caption: 'Vietnam 🇻🇳 — Joyrides and endless laughter together' },
+  { src: 'asset/singapore/image.png', caption: 'Singapore 🇸🇬 — First time we met! A moment to remember forever ✨' },
+  { src: 'asset/vietname/IMG_0236.jpg', caption: 'Vietnam 🇻🇳 — Romantic dinner overlooking the sparkling city lights 🌃' },
+  { src: 'asset/vietname/IMG_0180.jpg', caption: 'Vietnam 🇻🇳 — Brunch & coffee date together at Soko ☕' },
+  { src: 'asset/vietname/IMG_0225.jpg', caption: 'Vietnam 🇻🇳 — Joyrides and endless laughter on the road 🚗' },
 ];
 
 function openLightbox(i) {
