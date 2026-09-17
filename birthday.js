@@ -172,7 +172,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Hover effect on interactive elements
-document.querySelectorAll('button, a, .photo-card, .wish-card, .wax-seal').forEach(el => {
+document.querySelectorAll('button, a, .photo-card, .gift-box-item, .wax-seal').forEach(el => {
   el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
   el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
 });
@@ -368,23 +368,99 @@ document.querySelectorAll('.photo-card').forEach(card => {
 
 
 /* ──────────────────────────────────────────
-   WISH CARD FLIP
+   FLOATING FLOWER PETALS BURST
 ────────────────────────────────────────── */
-document.querySelectorAll('.wish-card').forEach(card => {
-  card.addEventListener('click', () => {
-    card.classList.toggle('flipped');
-    // Burst sparkles from the card center
-    const r = card.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top  + r.height / 2;
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => spawnSparkle(cx + (Math.random()-0.5)*60, cy + (Math.random()-0.5)*60), i*25);
+function spawnPetal(x, y) {
+  const el = document.createElement('div');
+  el.classList.add('floating-petal');
+  const petals = ['🌸', '🌺', '🌷', '✨', '💐', '💖', '🌼'];
+  el.textContent = petals[Math.floor(Math.random() * petals.length)];
+  const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
+  const dist = 70 + Math.random() * 95;
+  const tx = Math.cos(angle) * dist;
+  const ty = Math.sin(angle) * dist;
+  const rot = (Math.random() - 0.5) * 360;
+  el.style.cssText = `
+    left: ${x}px;
+    top: ${y}px;
+    font-size: ${16 + Math.random() * 12}px;
+    --tx: ${tx}px;
+    --ty: ${ty}px;
+    --rot: ${rot}deg;
+    animation: petal-burst 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  `;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+
+/* ──────────────────────────────────────────
+   BIRTHDAY GIFTS & POPPING BLOOMING FLOWERS
+────────────────────────────────────────── */
+const giftBoxItems    = document.querySelectorAll('.gift-box-item');
+const openAllGiftsBtn = document.getElementById('open-all-gifts-btn');
+const closeAllGiftsBtn = document.getElementById('close-all-gifts-btn');
+
+giftBoxItems.forEach(box => {
+  box.addEventListener('click', () => {
+    const isOpen = box.classList.toggle('is-open');
+    const badgeText = box.querySelector('.gift-badge-text');
+    if (badgeText) {
+      badgeText.textContent = isOpen ? 'Tap to close ↺' : 'Tap to open 🎁';
+    }
+
+    const rect = box.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.4;
+
+    if (isOpen) {
+      // Burst floating flower petals
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 40, cy + (Math.random() - 0.5) * 30), i * 35);
+      }
+      // Burst sparkles
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 50, cy + (Math.random() - 0.5) * 50), i * 30);
+      }
+      // Confetti celebration
+      if (typeof launchConfetti === 'function') {
+        setTimeout(launchConfetti, 160);
+      }
+    } else {
+      // Soft sparkle on close
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 30, cy + (Math.random() - 0.5) * 30), i * 25);
+      }
     }
   });
-  card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') card.classList.toggle('flipped');
+
+  box.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      box.click();
+    }
   });
 });
+
+if (openAllGiftsBtn) {
+  openAllGiftsBtn.addEventListener('click', () => {
+    giftBoxItems.forEach((box, index) => {
+      setTimeout(() => {
+        if (!box.classList.contains('is-open')) box.click();
+      }, index * 220);
+    });
+  });
+}
+
+if (closeAllGiftsBtn) {
+  closeAllGiftsBtn.addEventListener('click', () => {
+    giftBoxItems.forEach((box, index) => {
+      setTimeout(() => {
+        if (box.classList.contains('is-open')) box.click();
+      }, index * 100);
+    });
+  });
+}
 
 
 /* ──────────────────────────────────────────
