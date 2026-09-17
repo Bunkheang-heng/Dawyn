@@ -91,10 +91,13 @@ function onSlideEnter(n) {
     setTimeout(runCountUp, 300);
   }
 
-  // Letter reveal once on letter slide
+  // Sparkle the wax seal once on letter slide to invite opening
   if (n === 5 && !letterRevealed) {
     letterRevealed = true;
-    setTimeout(revealLetter, 350);
+    setTimeout(() => {
+      const seal = document.getElementById('wax-seal');
+      if (seal && typeof burstFromBtn === 'function') burstFromBtn(seal);
+    }, 450);
   }
 }
 
@@ -618,16 +621,45 @@ function animateNum(el, target, duration, large) {
 
 
 /* ──────────────────────────────────────────
-   LETTER REVEAL (fades in paragraph lines)
+   SEALED ENVELOPE / MAIL SHIELD INTERACTION
 ────────────────────────────────────────── */
-function revealLetter() {
-  const card = document.querySelector('.letter-card');
-  if (!card) return;
-  card.style.opacity = '0';
-  card.style.transform = 'translateY(20px)';
-  card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    card.style.opacity = '1';
-    card.style.transform = 'none';
-  }));
+const envelopeWrapper  = document.getElementById('envelope-wrapper');
+const envelopeClosed   = document.getElementById('envelope-closed');
+const letterRecloseBtn  = document.getElementById('letter-reclose-btn');
+const waxSeal          = document.getElementById('wax-seal');
+
+function openEnvelope() {
+  if (!envelopeWrapper || envelopeWrapper.classList.contains('is-open')) return;
+
+  // Burst sparkles from the wax seal
+  if (waxSeal && typeof burstFromBtn === 'function') {
+    burstFromBtn(waxSeal);
+  }
+
+  envelopeWrapper.classList.add('is-open');
+
+  // Celebrate with confetti when letter is opened
+  if (typeof launchConfetti === 'function') {
+    setTimeout(launchConfetti, 250);
+  }
+}
+
+function closeEnvelope(e) {
+  if (e) e.stopPropagation();
+  if (!envelopeWrapper) return;
+  envelopeWrapper.classList.remove('is-open');
+}
+
+if (envelopeClosed) {
+  envelopeClosed.addEventListener('click', openEnvelope);
+  envelopeClosed.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openEnvelope();
+    }
+  });
+}
+
+if (letterRecloseBtn) {
+  letterRecloseBtn.addEventListener('click', closeEnvelope);
 }

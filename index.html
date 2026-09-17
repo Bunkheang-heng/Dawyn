@@ -403,19 +403,46 @@
       <section class="slide" id="slide-5" data-index="5" aria-labelledby="letter-h">
         <div class="slide-content center">
           <h2 class="slide-heading" id="letter-h">A Letter for You</h2>
-          <p class="slide-sub">Written with all the love in the world</p>
-          <div class="letter-card">
-            <p class="letter-text" id="letter-text">
-              Dear Unc.nhii 🌸<br><br>
-              Today you step into 19 — and honestly? The world is not ready for you yet.<br><br>
-              You carry warmth, laughter, and a kind of magic that is entirely, beautifully yours.
-              Never let anyone dim that spark.<br><br>
-              May every candle you blow out be replaced by a dream that comes true.
-              May every wish you whisper find its way back to you.<br><br>
-              Here's to 19 years of being absolutely wonderful — and to every
-              beautiful moment still to come. 🥂
+          <p class="slide-sub" id="letter-subtitle">Sealed with all my heart · Tap to open 💌</p>
+
+          <!-- Interactive Sealed Mail Envelope -->
+          <div class="envelope-wrapper" id="envelope-wrapper">
+
+            <!-- Closed Sealed Envelope -->
+            <div class="envelope-closed" id="envelope-closed" role="button" tabindex="0"
+                 aria-label="Open sealed birthday letter for Unc.nhii">
+              <!-- Wax Seal Shield -->
+              <div class="wax-seal" id="wax-seal">
+                <span class="seal-icon" aria-hidden="true">💌</span>
+                <span class="seal-text">OPEN</span>
+              </div>
+              <div class="envelope-to">For: Unc.nhii 🌸</div>
+            </div>
+
+            <!-- The Letter (Unfolds when opened) -->
+            <div class="letter-card" id="letter-card">
+              <div class="letter-stamp" aria-hidden="true">Special Delivery ✦ 19</div>
+              <p class="letter-text" id="letter-text">
+                Dear Unc.nhii 🌸<br><br>
+                Today you step into 19 — and honestly? The world is not ready for you yet.<br><br>
+                You carry warmth, laughter, and a kind of magic that is entirely, beautifully yours.
+                Never let anyone dim that spark.<br><br>
+                May every candle you blow out be replaced by a dream that comes true.
+                May every wish you whisper find its way back to you.<br><br>
+                Here's to 19 years of being absolutely wonderful — and to every
+                beautiful moment still to come. 🥂
+              </p>
+              <p class="letter-sig">— With all the love in the universe 💖</p>
+              <button class="letter-reclose-btn" id="letter-reclose-btn" aria-label="Close letter back into envelope">
+                <span>✉️</span> Reseal Letter
+              </button>
+            </div>
+
+            <!-- Pulsing Tap Hint -->
+            <p class="envelope-hint" id="envelope-hint">
+              <span aria-hidden="true">✦</span> Tap the wax seal to open your letter <span aria-hidden="true">✦</span>
             </p>
-            <p class="letter-sig">— With all the love in the universe 💖</p>
+
           </div>
         </div>
       </section>
