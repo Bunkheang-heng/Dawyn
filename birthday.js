@@ -172,7 +172,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Hover effect on interactive elements
-document.querySelectorAll('button, a, .photo-card, .gift-box-item, .wax-seal').forEach(el => {
+document.querySelectorAll('button, a, .photo-card, .gift-present, .wax-seal').forEach(el => {
   el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
   el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
 });
@@ -395,71 +395,75 @@ function spawnPetal(x, y) {
 
 
 /* ──────────────────────────────────────────
-   BIRTHDAY GIFTS & POPPING BLOOMING FLOWERS
+   A SPECIAL BIRTHDAY GIFT & POPPING FLOWER BOUQUET
 ────────────────────────────────────────── */
-const giftBoxItems    = document.querySelectorAll('.gift-box-item');
-const openAllGiftsBtn = document.getElementById('open-all-gifts-btn');
-const closeAllGiftsBtn = document.getElementById('close-all-gifts-btn');
+const giftShowcase  = document.getElementById('gift-showcase');
+const giftPresent   = document.getElementById('gift-present');
+const giftRepackBtn = document.getElementById('gift-repack-btn');
 
-giftBoxItems.forEach(box => {
-  box.addEventListener('click', () => {
-    const isOpen = box.classList.toggle('is-open');
-    const badgeText = box.querySelector('.gift-badge-text');
-    if (badgeText) {
-      badgeText.textContent = isOpen ? 'Tap to close ↺' : 'Tap to open 🎁';
-    }
+function openGift() {
+  if (!giftShowcase || giftShowcase.classList.contains('is-opened')) return;
+  giftShowcase.classList.add('is-opened');
 
-    const rect = box.getBoundingClientRect();
+  if (giftPresent) {
+    const rect = giftPresent.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height * 0.4;
+    const cy = rect.top + rect.height * 0.45;
 
-    if (isOpen) {
-      // Burst floating flower petals
-      for (let i = 0; i < 12; i++) {
-        setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 40, cy + (Math.random() - 0.5) * 30), i * 35);
-      }
-      // Burst sparkles
-      for (let i = 0; i < 8; i++) {
-        setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 50, cy + (Math.random() - 0.5) * 50), i * 30);
-      }
-      // Confetti celebration
-      if (typeof launchConfetti === 'function') {
-        setTimeout(launchConfetti, 160);
-      }
+    // Burst floating flower petals
+    for (let i = 0; i < 16; i++) {
+      setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 60, cy + (Math.random() - 0.5) * 40), i * 30);
+    }
+    // Burst sparkles
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 80, cy + (Math.random() - 0.5) * 60), i * 25);
+    }
+  }
+
+  // Celebratory confetti shower
+  if (typeof launchConfetti === 'function') {
+    setTimeout(launchConfetti, 200);
+  }
+}
+
+function closeGift(e) {
+  if (e) e.stopPropagation();
+  if (!giftShowcase) return;
+  giftShowcase.classList.remove('is-opened');
+
+  if (giftPresent) {
+    const rect = giftPresent.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.5;
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 40, cy + (Math.random() - 0.5) * 40), i * 25);
+    }
+  }
+}
+
+if (giftPresent) {
+  giftPresent.addEventListener('click', () => {
+    if (giftShowcase && giftShowcase.classList.contains('is-opened')) {
+      closeGift();
     } else {
-      // Soft sparkle on close
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 30, cy + (Math.random() - 0.5) * 30), i * 25);
-      }
+      openGift();
     }
   });
 
-  box.addEventListener('keydown', e => {
+  giftPresent.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      box.click();
+      if (giftShowcase && giftShowcase.classList.contains('is-opened')) {
+        closeGift();
+      } else {
+        openGift();
+      }
     }
-  });
-});
-
-if (openAllGiftsBtn) {
-  openAllGiftsBtn.addEventListener('click', () => {
-    giftBoxItems.forEach((box, index) => {
-      setTimeout(() => {
-        if (!box.classList.contains('is-open')) box.click();
-      }, index * 220);
-    });
   });
 }
 
-if (closeAllGiftsBtn) {
-  closeAllGiftsBtn.addEventListener('click', () => {
-    giftBoxItems.forEach((box, index) => {
-      setTimeout(() => {
-        if (box.classList.contains('is-open')) box.click();
-      }, index * 100);
-    });
-  });
+if (giftRepackBtn) {
+  giftRepackBtn.addEventListener('click', closeGift);
 }
 
 
