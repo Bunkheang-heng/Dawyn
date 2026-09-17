@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 19th Birthday, Unc.nhii ✨</title>
+  <meta name="description" content="A magical birthday surprise for Unc.nhii turning 19 — crafted with love.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="birthday.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor" aria-hidden="true"></div>
+  <div id="cursor-dot" aria-hidden="true"></div>
+
+  <!-- Background layers -->
+  <div id="orbs-layer" aria-hidden="true"></div>
+  <div id="sparkle-container" aria-hidden="true"></div>
+  <canvas id="canvas-confetti" aria-hidden="true"></canvas>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-bar" aria-hidden="true"></div>
+
+  <!-- ── Surprise Screen ── -->
+  <div id="surprise-screen" role="dialog" aria-modal="true" aria-labelledby="surprise-title">
+    <div class="surprise-inner">
+      <span class="surprise-ribbon" aria-hidden="true">🎀</span>
+      <h1 class="surprise-title" id="surprise-title">A Special Surprise</h1>
+      <p class="surprise-sub">For someone who makes every room more beautiful just by being in it</p>
+      <button id="reveal-btn">Open Your Gift ✨</button>
+    </div>
+  </div>
+
+  <!-- ── Music Player ── -->
+  <aside id="music-player" role="region" aria-label="Music player">
+    <button id="music-btn" aria-label="Play birthday music" title="Play / Pause">
+      <span id="music-icon">▶</span>
+    </button>
+    <div class="player-info">
+      <div class="player-title">🎂 Happy Birthday, Unc.nhii!</div>
+      <div class="player-sub">BIRTHDAY MELODY</div>
+    </div>
+    <div class="equalizer paused" id="equalizer" aria-hidden="true">
+      <span class="eq-bar"></span>
+      <span class="eq-bar"></span>
+      <span class="eq-bar"></span>
+      <span class="eq-bar"></span>
+      <span class="eq-bar"></span>
+    </div>
+  </aside>
+
+  <!-- ── Slide Navigation ── -->
+  <button id="nav-prev" class="nav-arrow" aria-label="Previous slide" disabled>&#8249;</button>
+  <button id="nav-next" class="nav-arrow" aria-label="Next slide">&#8250;</button>
+  <nav id="dot-nav" aria-label="Slide navigation" role="tablist"></nav>
+  <div id="slide-counter" aria-live="polite" aria-atomic="true">1 / 6</div>
+
+  <!-- ══════════════════ SLIDES ══════════════════ -->
+  <main id="slides-container">
+    <div id="slides-wrapper">
+
+      <!-- SLIDE 1 · HERO -->
+      <section class="slide" id="slide-0" data-index="0" aria-label="Welcome">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div id="floating-emojis" aria-hidden="true"></div>
+        <div class="slide-content center">
+          <span class="badge">September 2026</span>
+          <h1 class="display-name">Unc.nhii</h1>
+          <p class="hero-sub">is turning <em>19</em> today ✨</p>
+          <button id="confetti-btn" class="primary-btn">🎊 Celebrate!</button>
+        </div>
+      </section>
+
+      <!-- SLIDE 2 · GALLERY -->
+      <section class="slide" id="slide-1" data-index="1" aria-labelledby="gallery-h">
+        <div class="slide-content">
+          <h2 class="slide-heading" id="gallery-h">Our Moments Together</h2>
+          <p class="slide-sub">Hover to feel it · Click to open</p>
+          <div class="gallery-grid">
+
+            <article class="photo-card" id="photo-0" role="button" tabindex="0"
+              aria-label="View photo: Coffee at the café">
+              <img src="asset/IMG_0180.jpg" alt="Unc.nhii and brother at a café"
+                   width="800" height="1000" loading="lazy">
+              <div class="photo-overlay">
+                <p class="photo-caption">Coffee &amp; good vibes ☕</p>
+              </div>
+              <span class="photo-zoom" aria-hidden="true">⊕</span>
+            </article>
+
+            <article class="photo-card" id="photo-1" role="button" tabindex="0"
+              aria-label="View photo: Laughing in the car">
+              <img src="asset/IMG_0225.jpg" alt="Laughing in the car together"
+                   width="800" height="1000" loading="lazy">
+              <div class="photo-overlay">
+                <p class="photo-caption">Riding &amp; laughing 🚗</p>
+              </div>
+              <span class="photo-zoom" aria-hidden="true">⊕</span>
+            </article>
+
+            <article class="photo-card" id="photo-2" role="button" tabindex="0"
+              aria-label="View photo: City night view">
+              <img src="asset/IMG_0236.jpg" alt="City night restaurant view"
+                   width="800" height="1000" loading="lazy">
+              <div class="photo-overlay">
+                <p class="photo-caption">City lights &amp; dreams 🌃</p>
+              </div>
+              <span class="photo-zoom" aria-hidden="true">⊕</span>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3 · STATS -->
+      <section class="slide" id="slide-2" data-index="2" aria-labelledby="stats-h">
+        <div class="slide-content center">
+          <h2 class="slide-heading" id="stats-h">19 Years of You</h2>
+          <p class="slide-sub">Every single moment counted</p>
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-number" id="stat-years">0</div>
+              <div class="stat-label">Years</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="stat-months">0</div>
+              <div class="stat-label">Months</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="stat-days">0</div>
+              <div class="stat-label">Days</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="stat-hours">0</div>
+              <div class="stat-label">Hours</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">∞</div>
+              <div class="stat-label">Smiles</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4 · CAKE -->
+      <section class="slide" id="slide-3" data-index="3" aria-labelledby="cake-h">
+        <div class="slide-content center">
+          <h2 class="slide-heading" id="cake-h">Make a Wish</h2>
+          <p class="slide-sub">Click the cake to blow out the candles</p>
+          <div class="cake-wrapper" id="cake-wrapper">
+            <svg id="birthday-cake" width="300" height="320" viewBox="0 0 320 340"
+                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Birthday cake with candles">
+              <defs>
+                <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="hsl(330,70%,55%)"/>
+                  <stop offset="100%" stop-color="hsl(330,60%,42%)"/>
+                </linearGradient>
+                <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="hsl(270,60%,50%)"/>
+                  <stop offset="100%" stop-color="hsl(270,50%,38%)"/>
+                </linearGradient>
+                <linearGradient id="cg3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="hsl(340,80%,62%)"/>
+                  <stop offset="100%" stop-color="hsl(340,70%,48%)"/>
+                </linearGradient>
+                <linearGradient id="fr1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="hsl(340,60%,92%)" stop-opacity="0.9"/>
+                </linearGradient>
+                <linearGradient id="fr2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="hsl(270,60%,90%)" stop-opacity="0.9"/>
+                </linearGradient>
+                <linearGradient id="fr3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="hsl(340,60%,92%)" stop-opacity="0.9"/>
+                </linearGradient>
+                <radialGradient id="fg" cx="50%" cy="70%" r="50%">
+                  <stop offset="0%" stop-color="hsl(42,100%,90%)"/>
+                  <stop offset="40%" stop-color="hsl(42,100%,65%)"/>
+                  <stop offset="100%" stop-color="hsl(15,100%,55%)" stop-opacity="0.7"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="160" cy="310" rx="145" ry="18" fill="hsl(340,30%,80%)" opacity="0.3"/>
+              <rect x="40" y="230" width="240" height="80" rx="16" fill="url(#cg1)"/>
+              <rect x="40" y="230" width="240" height="22" rx="8" fill="url(#fr1)"/>
+              <rect x="70" y="160" width="180" height="75" rx="14" fill="url(#cg2)"/>
+              <rect x="70" y="160" width="180" height="20" rx="8" fill="url(#fr2)"/>
+              <rect x="100" y="100" width="120" height="65" rx="12" fill="url(#cg3)"/>
+              <rect x="100" y="100" width="120" height="18" rx="8" fill="url(#fr3)"/>
+              <circle cx="75"  cy="265" r="5" fill="hsl(42,95%,65%)"  opacity="0.9"/>
+              <circle cx="115" cy="274" r="4" fill="hsl(340,90%,80%)" opacity="0.9"/>
+              <circle cx="155" cy="263" r="5" fill="hsl(270,70%,75%)" opacity="0.9"/>
+              <circle cx="195" cy="273" r="4" fill="hsl(42,95%,65%)"  opacity="0.9"/>
+              <circle cx="235" cy="264" r="5" fill="hsl(340,90%,80%)" opacity="0.9"/>
+              <circle cx="95"  cy="193" r="4" fill="hsl(42,95%,65%)"  opacity="0.9"/>
+              <circle cx="160" cy="197" r="4" fill="hsl(270,70%,75%)" opacity="0.9"/>
+              <circle cx="225" cy="194" r="4" fill="hsl(340,90%,80%)" opacity="0.9"/>
+              <text x="160" y="141" text-anchor="middle"
+                    font-family="Cormorant Garamond, serif" font-size="26"
+                    fill="white" opacity="0.9" font-weight="600">19</text>
+              <rect x="114" y="72" width="12" height="33" rx="4" fill="hsl(340,90%,68%)"/>
+              <ellipse cx="120" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
+              <ellipse id="flame1" cx="120" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
+              <rect x="134" y="72" width="12" height="33" rx="4" fill="hsl(270,70%,65%)"/>
+              <ellipse cx="140" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
+              <ellipse id="flame2" cx="140" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
+              <rect x="154" y="70" width="12" height="35" rx="4" fill="hsl(42,95%,65%)"/>
+              <ellipse cx="160" cy="66" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
+              <ellipse id="flame3" cx="160" cy="59" rx="5" ry="9" fill="url(#fg)" class="flame"/>
+              <rect x="174" y="72" width="12" height="33" rx="4" fill="hsl(200,80%,65%)"/>
+              <ellipse cx="180" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
+              <ellipse id="flame4" cx="180" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
+              <rect x="194" y="72" width="12" height="33" rx="4" fill="hsl(340,90%,68%)"/>
+              <ellipse cx="200" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
+              <ellipse id="flame5" cx="200" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
+            </svg>
+            <p class="cake-hint" id="cake-hint" aria-live="polite">
+              Click the cake to blow out the candles!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5 · WISHES -->
+      <section class="slide" id="slide-4" data-index="4" aria-labelledby="wishes-h">
+        <div class="slide-content">
+          <h2 class="slide-heading" id="wishes-h">Birthday Wishes</h2>
+          <p class="slide-sub">Click any card to reveal a secret message 💌</p>
+          <div class="wishes-grid">
+
+            <article class="wish-card" id="wish-0" role="button" tabindex="0" aria-label="Wish card: Shine Bright">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">🌟</span>
+                  <h3 class="wish-title">Shine Bright</h3>
+                  <p class="wish-text">May your 19th year be as radiant as you are. You carry a light that warms every room you walk into.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">💫</span>
+                  <p class="back-msg">You have a glow that no one can fake. The world needs more of your light.</p>
+                  <p class="back-sig">— With love 💖</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="wish-card" id="wish-1" role="button" tabindex="0" aria-label="Wish card: Bloom and Grow">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">🌸</span>
+                  <h3 class="wish-title">Bloom &amp; Grow</h3>
+                  <p class="wish-text">Like the most beautiful flower, may you bloom in your own perfect time, growing stronger every season.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">🌷</span>
+                  <p class="back-msg">Every season of your life will be more beautiful than the last. Trust the process.</p>
+                  <p class="back-sig">— Always rooting for you 🌱</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="wish-card" id="wish-2" role="button" tabindex="0" aria-label="Wish card: Chase Dreams">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">💫</span>
+                  <h3 class="wish-title">Chase Dreams</h3>
+                  <p class="wish-text">19 is the beginning of the most exciting chapter yet. Every dream you have deserves to become your reality.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">🚀</span>
+                  <p class="back-msg">The world is yours to discover. Dream big, move fast, and never apologize for your ambitions.</p>
+                  <p class="back-sig">— Go get it, sister! ✨</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="wish-card" id="wish-3" role="button" tabindex="0" aria-label="Wish card: Beautiful Journey">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">🦋</span>
+                  <h3 class="wish-title">Beautiful Journey</h3>
+                  <p class="wish-text">May each choice lead you somewhere even more magical than you imagined. Life is full of wonder.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">🗺️</span>
+                  <p class="back-msg">Every path you take will lead somewhere worth going. Trust yourself completely.</p>
+                  <p class="back-sig">— Believe in the journey 💛</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="wish-card" id="wish-4" role="button" tabindex="0" aria-label="Wish card: Loved Always">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">💖</span>
+                  <h3 class="wish-title">Loved Always</h3>
+                  <p class="wish-text">On this special day, know that you are deeply loved, endlessly appreciated, and always celebrated.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">🫶</span>
+                  <p class="back-msg">You are the joy of everyone who knows you. Don't ever forget how special you truly are.</p>
+                  <p class="back-sig">— Loved more than words 💕</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="wish-card" id="wish-5" role="button" tabindex="0" aria-label="Wish card: Your Magic Year">
+              <div class="card-inner">
+                <div class="card-front">
+                  <span class="wish-icon">✨</span>
+                  <h3 class="wish-title">Your Magic Year</h3>
+                  <p class="wish-text">Embrace the adventures, laugh at the detours, and treasure every moment of this beautiful journey.</p>
+                  <span class="flip-hint">Tap to flip ✦</span>
+                </div>
+                <div class="card-back">
+                  <span class="back-icon">🎂</span>
+                  <p class="back-msg">19 looks absolutely stunning on you. May this be the best year yet. Happy Birthday!</p>
+                  <p class="back-sig">— Happy 19th, Unc.nhii 🎉</p>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6 · LETTER -->
+      <section class="slide" id="slide-5" data-index="5" aria-labelledby="letter-h">
+        <div class="slide-content center">
+          <h2 class="slide-heading" id="letter-h">A Letter for You</h2>
+          <p class="slide-sub">Written with all the love in the world</p>
+          <div class="letter-card">
+            <p class="letter-text" id="letter-text">
+              Dear Unc.nhii 🌸<br><br>
+              Today you step into 19 — and honestly? The world is not ready for you yet.<br><br>
+              You carry warmth, laughter, and a kind of magic that is entirely, beautifully yours.
+              Never let anyone dim that spark.<br><br>
+              May every candle you blow out be replaced by a dream that comes true.
+              May every wish you whisper find its way back to you.<br><br>
+              Here's to 19 years of being absolutely wonderful — and to every
+              beautiful moment still to come. 🥂
+            </p>
+            <p class="letter-sig">— With all the love in the universe 💖</p>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /slides-wrapper -->
+  </main><!-- /slides-container -->
+
+  <!-- Lightbox -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button id="lightbox-close" aria-label="Close photo">&#x2715;</button>
+    <img id="lightbox-img" src="" alt="">
+    <p id="lightbox-caption"></p>
+  </div>
+
+  <script src="birthday.js"></script>
+</body>
+</html>
