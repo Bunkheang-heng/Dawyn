@@ -397,9 +397,16 @@ function spawnPetal(x, y) {
 /* ──────────────────────────────────────────
    A SPECIAL BIRTHDAY GIFT & POPPING FLOWER BOUQUET
 ────────────────────────────────────────── */
-const giftShowcase  = document.getElementById('gift-showcase');
-const giftPresent   = document.getElementById('gift-present');
-const giftRepackBtn = document.getElementById('gift-repack-btn');
+const giftShowcase       = document.getElementById('gift-showcase');
+const giftPresent        = document.getElementById('gift-present');
+const giftRepackBtn      = document.getElementById('gift-repack-btn');
+const flowerSpeechBubble = document.getElementById('flower-speech-bubble');
+const speechIcon         = document.getElementById('speech-icon');
+const flowerSpeechText   = document.getElementById('flower-speech-text');
+const btnShowerPetals    = document.getElementById('btn-shower-petals');
+const btnSparkleMagic    = document.getElementById('btn-sparkle-magic');
+
+const DEFAULT_FLOWER_HINT = 'Tap on any flower to reveal its secret message ✦';
 
 function openGift() {
   if (!giftShowcase || giftShowcase.classList.contains('is-opened')) return;
@@ -411,18 +418,18 @@ function openGift() {
     const cy = rect.top + rect.height * 0.45;
 
     // Burst floating flower petals
-    for (let i = 0; i < 16; i++) {
-      setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 60, cy + (Math.random() - 0.5) * 40), i * 30);
+    for (let i = 0; i < 18; i++) {
+      setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 70, cy + (Math.random() - 0.5) * 50), i * 30);
     }
     // Burst sparkles
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 80, cy + (Math.random() - 0.5) * 60), i * 25);
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 90, cy + (Math.random() - 0.5) * 70), i * 25);
     }
   }
 
   // Celebratory confetti shower
   if (typeof launchConfetti === 'function') {
-    setTimeout(launchConfetti, 200);
+    setTimeout(launchConfetti, 250);
   }
 }
 
@@ -430,6 +437,14 @@ function closeGift(e) {
   if (e) e.stopPropagation();
   if (!giftShowcase) return;
   giftShowcase.classList.remove('is-opened');
+
+  if (flowerSpeechText) {
+    setTimeout(() => {
+      if (speechIcon) speechIcon.textContent = '🌸';
+      flowerSpeechText.textContent = DEFAULT_FLOWER_HINT;
+      if (flowerSpeechBubble) flowerSpeechBubble.classList.remove('has-bloomed');
+    }, 400);
+  }
 
   if (giftPresent) {
     const rect = giftPresent.getBoundingClientRect();
@@ -441,23 +456,114 @@ function closeGift(e) {
   }
 }
 
+// Present click to open
 if (giftPresent) {
-  giftPresent.addEventListener('click', () => {
-    if (giftShowcase && giftShowcase.classList.contains('is-opened')) {
-      closeGift();
-    } else {
+  giftPresent.addEventListener('click', (e) => {
+    // If the gift is already open, do not close when clicking flowers
+    if (!giftShowcase.classList.contains('is-opened')) {
       openGift();
     }
   });
 
   giftPresent.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (giftShowcase && giftShowcase.classList.contains('is-opened')) {
-        closeGift();
-      } else {
+      if (!giftShowcase.classList.contains('is-opened')) {
+        e.preventDefault();
         openGift();
       }
+    }
+  });
+}
+
+// Interactive Flowers
+function triggerFlowerBloom(flowerEl) {
+  if (!flowerEl) return;
+  const name = flowerEl.getAttribute('data-name') || 'Flower';
+  const icon = flowerEl.getAttribute('data-icon') || '🌸';
+  const msg  = flowerEl.getAttribute('data-msg') || 'Happy Birthday!';
+
+  // Update speech bubble
+  if (flowerSpeechBubble && flowerSpeechText) {
+    if (speechIcon) speechIcon.textContent = icon;
+    flowerSpeechText.textContent = `${name}: "${msg}"`;
+    flowerSpeechBubble.classList.remove('has-bloomed');
+    void flowerSpeechBubble.offsetWidth;
+    flowerSpeechBubble.classList.add('has-bloomed');
+  }
+
+  // Animate flower blossom
+  flowerEl.classList.remove('is-bloomed');
+  void flowerEl.offsetWidth;
+  flowerEl.classList.add('is-bloomed');
+  setTimeout(() => flowerEl.classList.remove('is-bloomed'), 700);
+
+  // Spawn targeted petal and sparkle bursts from flower position
+  const rect = flowerEl.getBoundingClientRect();
+  const fx = rect.left + rect.width / 2;
+  const fy = rect.top + rect.height / 2;
+
+  for (let i = 0; i < 7; i++) {
+    setTimeout(() => spawnPetal(fx + (Math.random() - 0.5) * 25, fy + (Math.random() - 0.5) * 25), i * 35);
+  }
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => spawnSparkle(fx + (Math.random() - 0.5) * 35, fy + (Math.random() - 0.5) * 35), i * 30);
+  }
+}
+
+document.querySelectorAll('.interactive-flower').forEach(flower => {
+  flower.addEventListener('click', (e) => {
+    e.stopPropagation();
+    triggerFlowerBloom(flower);
+  });
+
+  flower.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerFlowerBloom(flower);
+    }
+  });
+});
+
+// Shower petals button
+if (btnShowerPetals) {
+  btnShowerPetals.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (flowerSpeechBubble && flowerSpeechText) {
+      if (speechIcon) speechIcon.textContent = '🌸';
+      flowerSpeechText.textContent = 'A shower of fragrant petals for a wonderful 19th birthday! ✦';
+      flowerSpeechBubble.classList.add('has-bloomed');
+    }
+    const width = window.innerWidth;
+    for (let i = 0; i < 26; i++) {
+      setTimeout(() => {
+        const x = Math.random() * width;
+        const y = 50 + Math.random() * (window.innerHeight * 0.5);
+        spawnPetal(x, y);
+      }, i * 45);
+    }
+  });
+}
+
+// Magic sparkles button
+if (btnSparkleMagic) {
+  btnSparkleMagic.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (flowerSpeechBubble && flowerSpeechText) {
+      if (speechIcon) speechIcon.textContent = '✨';
+      flowerSpeechText.textContent = 'May all your brightest dreams and wishes come true! ✦';
+      flowerSpeechBubble.classList.add('has-bloomed');
+    }
+    if (typeof launchConfetti === 'function') {
+      launchConfetti();
+    }
+    const width = window.innerWidth;
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => {
+        const x = Math.random() * width;
+        const y = 80 + Math.random() * (window.innerHeight * 0.6);
+        spawnSparkle(x, y);
+      }, i * 40);
     }
   });
 }
