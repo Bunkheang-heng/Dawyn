@@ -73,18 +73,29 @@ function updateNavUI() {
   }
 }
 
+let slideEnterRaf = 0;
+
 function onSlideEnter(n) {
-  // Remove is-active from all, add to current
   document.querySelectorAll('.slide').forEach(s => s.classList.remove('is-active'));
   const activeSlide = document.getElementById(`slide-${n}`);
   if (activeSlide) {
-    // Double rAF so CSS transition picks up the class change
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    const content = activeSlide.querySelector('.slide-content');
+    if (content) content.scrollTop = 0;
+    if (slideEnterRaf) cancelAnimationFrame(slideEnterRaf);
+    // Reflow, then activate so CSS entrance transitions still fire reliably
+    void activeSlide.offsetWidth;
+    slideEnterRaf = requestAnimationFrame(() => {
+      slideEnterRaf = 0;
       activeSlide.classList.add('is-active');
-    }));
+    });
+    // Fallback if rAF is delayed/skipped during rapid navigation
+    setTimeout(() => {
+      if (!activeSlide.classList.contains('is-active') && currentSlide === n) {
+        activeSlide.classList.add('is-active');
+      }
+    }, 50);
   }
 
-  // Sparkle the wax seal once on letter slide to invite opening
   if (n === 4 && !letterRevealed) {
     letterRevealed = true;
     setTimeout(() => {
@@ -143,9 +154,11 @@ const revealBtn      = document.getElementById('reveal-btn');
 
 revealBtn.addEventListener('click', () => {
   revealed = true;
+  document.body.classList.add('is-revealed');
   surpriseScreen.classList.add('hidden');
   userWantsMusic = true;
   playMusic();
+  if (typeof launchConfetti === 'function') setTimeout(launchConfetti, 400);
 });
 
 
@@ -172,10 +185,17 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Hover effect on interactive elements
-document.querySelectorAll('button, a, .photo-card, .gift-present, .wax-seal').forEach(el => {
-  el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
-  el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
-});
+function bindCursorHover(root = document) {
+  root.querySelectorAll(
+    'button, a, .photo-card, .gift-present, .wax-seal, .interactive-flower, .destination-card, .cake-wrapper, .envelope-closed, .wish-chip'
+  ).forEach(el => {
+    if (el.dataset.cursorBound) return;
+    el.dataset.cursorBound = '1';
+    el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
+  });
+}
+bindCursorHover();
 
 
 /* ──────────────────────────────────────────
@@ -406,7 +426,14 @@ const flowerSpeechText   = document.getElementById('flower-speech-text');
 const btnShowerPetals    = document.getElementById('btn-shower-petals');
 const btnSparkleMagic    = document.getElementById('btn-sparkle-magic');
 
-const DEFAULT_FLOWER_HINT = 'Tap on any flower to reveal its secret message ✦';
+const DEFAULT_FLOWER_HINT = 'Tap a flower — in the bouquet or below — for a secret wish ✦';
+const bloomedFlowers = new Set();
+
+function markWishChip(flowerId) {
+  document.querySelectorAll('.wish-chip').forEach(chip => {
+    chip.classList.toggle('is-picked', chip.dataset.flower === flowerId || bloomedFlowers.has(chip.dataset.flower));
+  });
+}
 
 function openGift() {
   if (!giftShowcase || giftShowcase.classList.contains('is-opened')) return;
@@ -417,17 +444,24 @@ function openGift() {
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height * 0.45;
 
-    // Burst floating flower petals
     for (let i = 0; i < 18; i++) {
       setTimeout(() => spawnPetal(cx + (Math.random() - 0.5) * 70, cy + (Math.random() - 0.5) * 50), i * 30);
     }
-    // Burst sparkles
     for (let i = 0; i < 12; i++) {
       setTimeout(() => spawnSparkle(cx + (Math.random() - 0.5) * 90, cy + (Math.random() - 0.5) * 70), i * 25);
     }
   }
 
-  // Celebratory confetti shower
+  // On stacked layouts, ease the wish panel into view
+  setTimeout(() => {
+    const panel = document.getElementById('gift-wish-panel');
+    const content = document.querySelector('#slide-3 .slide-content');
+    if (panel && content && window.innerWidth < 900) {
+      const target = Math.max(0, panel.offsetTop - 24);
+      content.scrollTo({ top: target, behavior: 'smooth' });
+    }
+  }, 450);
+
   if (typeof launchConfetti === 'function') {
     setTimeout(launchConfetti, 250);
   }
@@ -437,6 +471,8 @@ function closeGift(e) {
   if (e) e.stopPropagation();
   if (!giftShowcase) return;
   giftShowcase.classList.remove('is-opened');
+  bloomedFlowers.clear();
+  document.querySelectorAll('.wish-chip').forEach(chip => chip.classList.remove('is-picked'));
 
   if (flowerSpeechText) {
     setTimeout(() => {
@@ -458,8 +494,7 @@ function closeGift(e) {
 
 // Present click to open
 if (giftPresent) {
-  giftPresent.addEventListener('click', (e) => {
-    // If the gift is already open, do not close when clicking flowers
+  giftPresent.addEventListener('click', () => {
     if (!giftShowcase.classList.contains('is-opened')) {
       openGift();
     }
@@ -481,8 +516,8 @@ function triggerFlowerBloom(flowerEl) {
   const name = flowerEl.getAttribute('data-name') || 'Flower';
   const icon = flowerEl.getAttribute('data-icon') || '🌸';
   const msg  = flowerEl.getAttribute('data-msg') || 'Happy Birthday!';
+  const id   = flowerEl.id || name;
 
-  // Update speech bubble
   if (flowerSpeechBubble && flowerSpeechText) {
     if (speechIcon) speechIcon.textContent = icon;
     flowerSpeechText.textContent = `${name}: "${msg}"`;
@@ -491,13 +526,11 @@ function triggerFlowerBloom(flowerEl) {
     flowerSpeechBubble.classList.add('has-bloomed');
   }
 
-  // Animate flower blossom
   flowerEl.classList.remove('is-bloomed');
   void flowerEl.offsetWidth;
   flowerEl.classList.add('is-bloomed');
   setTimeout(() => flowerEl.classList.remove('is-bloomed'), 700);
 
-  // Spawn targeted petal and sparkle bursts from flower position
   const rect = flowerEl.getBoundingClientRect();
   const fx = rect.left + rect.width / 2;
   const fy = rect.top + rect.height / 2;
@@ -507,6 +540,18 @@ function triggerFlowerBloom(flowerEl) {
   }
   for (let i = 0; i < 6; i++) {
     setTimeout(() => spawnSparkle(fx + (Math.random() - 0.5) * 35, fy + (Math.random() - 0.5) * 35), i * 30);
+  }
+
+  bloomedFlowers.add(id);
+  markWishChip(id);
+
+  const totalFlowers = document.querySelectorAll('.interactive-flower').length;
+  if (bloomedFlowers.size === totalFlowers && flowerSpeechText) {
+    setTimeout(() => {
+      if (speechIcon) speechIcon.textContent = '💖';
+      flowerSpeechText.textContent = 'Every flower bloomed — a full garden of wishes just for you! ✦';
+      if (typeof launchConfetti === 'function') launchConfetti();
+    }, 400);
   }
 }
 
@@ -522,6 +567,14 @@ document.querySelectorAll('.interactive-flower').forEach(flower => {
       e.stopPropagation();
       triggerFlowerBloom(flower);
     }
+  });
+});
+
+document.querySelectorAll('.wish-chip').forEach(chip => {
+  chip.addEventListener('click', e => {
+    e.stopPropagation();
+    const flower = document.getElementById(chip.dataset.flower);
+    if (flower) triggerFlowerBloom(flower);
   });
 });
 
@@ -677,17 +730,22 @@ document.addEventListener('touchstart', attemptAutoplayUnlock, { once: true });
 /* ──────────────────────────────────────────
    CAKE INTERACTION + PARTICLE BURST
 ────────────────────────────────────────── */
-const cakeWrapper = document.getElementById('cake-wrapper');
-const cakeHint    = document.getElementById('cake-hint');
-let   cakeBlown   = false;
-const flameEls    = ['flame1','flame2','flame3','flame4','flame5'].map(id => document.getElementById(id));
+const cakeWrapper   = document.getElementById('cake-wrapper');
+const cakeHint      = document.getElementById('cake-hint');
+const cakeRelightBtn = document.getElementById('cake-relight-btn');
+let   cakeBlown     = false;
+const flameEls      = ['flame1','flame2','flame3','flame4','flame5'].map(id => document.getElementById(id));
+const CAKE_HINT_IDLE = '<span aria-hidden="true">✦</span> Tap the cake to blow out the candles <span aria-hidden="true">✦</span>';
+const CAKE_HINT_DONE = '🎉 Happy Birthday, Unc.nhii! Wish granted!';
 
-cakeWrapper.addEventListener('click', () => {
-  if (cakeBlown) return;
+function blowOutCake() {
+  if (cakeBlown || !cakeWrapper) return;
   cakeBlown = true;
+  cakeWrapper.classList.add('is-blown');
+  cakeWrapper.setAttribute('aria-label', 'Birthday cake — candles blown out');
 
-  // Blow out each flame with a stagger
   flameEls.forEach((f, i) => {
+    if (!f) return;
     setTimeout(() => {
       f.style.opacity = '0';
       f.style.transform = 'scaleY(0)';
@@ -695,17 +753,62 @@ cakeWrapper.addEventListener('click', () => {
     }, i * 90);
   });
 
-  // Emoji particle burst from cake
   setTimeout(() => {
     spawnCakeParticles();
-    cakeHint.textContent = '🎉 Happy Birthday, Unc.nhii! Wish granted!';
-    cakeHint.style.opacity = '1';
+    if (cakeHint) {
+      cakeHint.textContent = CAKE_HINT_DONE;
+      cakeHint.style.opacity = '1';
+    }
+    if (cakeRelightBtn) cakeRelightBtn.hidden = false;
     launchConfetti();
   }, flameEls.length * 90 + 150);
-});
+}
+
+function relightCake(e) {
+  if (e) e.stopPropagation();
+  cakeBlown = false;
+  if (cakeWrapper) {
+    cakeWrapper.classList.remove('is-blown');
+    cakeWrapper.setAttribute('aria-label', 'Birthday cake — tap to blow out the candles');
+  }
+  flameEls.forEach((f, i) => {
+    if (!f) return;
+    setTimeout(() => {
+      f.style.opacity = '1';
+      f.style.transform = '';
+      f.style.transition = 'opacity 0.35s, transform 0.35s';
+    }, i * 70);
+  });
+  if (cakeHint) cakeHint.innerHTML = CAKE_HINT_IDLE;
+  if (cakeRelightBtn) cakeRelightBtn.hidden = true;
+  if (cakeWrapper) {
+    const rect = cakeWrapper.getBoundingClientRect();
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => spawnSparkle(
+        rect.left + rect.width / 2 + (Math.random() - 0.5) * 40,
+        rect.top + rect.height * 0.25 + (Math.random() - 0.5) * 20
+      ), i * 30);
+    }
+  }
+}
+
+if (cakeWrapper) {
+  cakeWrapper.addEventListener('click', e => {
+    if (e.target.closest('#cake-relight-btn')) return;
+    blowOutCake();
+  });
+  cakeWrapper.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      blowOutCake();
+    }
+  });
+}
+if (cakeRelightBtn) cakeRelightBtn.addEventListener('click', relightCake);
 
 function spawnCakeParticles() {
   const cake = document.getElementById('birthday-cake');
+  if (!cake) return;
   const rect = cake.getBoundingClientRect();
   const cx   = rect.left + rect.width  / 2;
   const cy   = rect.top  + rect.height / 3;
@@ -740,18 +843,31 @@ const lightbox      = document.getElementById('lightbox');
 const lightboxImg   = document.getElementById('lightbox-img');
 const lightboxCap   = document.getElementById('lightbox-caption');
 const lightboxClose = document.getElementById('lightbox-close');
+const lightboxPrev  = document.getElementById('lightbox-prev');
+const lightboxNext  = document.getElementById('lightbox-next');
+const lightboxCount = document.getElementById('lightbox-counter');
+let lightboxIndex = 0;
 
 const photoData = [
-  { src: 'asset/singapore/image.png', caption: 'Singapore 🇸🇬 — First time we met! A moment to remember forever ✨' },
+  { src: 'asset/singapore/image.png',  caption: 'Singapore 🇸🇬 — First time we met! A moment to remember forever ✨' },
+  { src: 'asset/singapore/image2.png', caption: 'Singapore 🇸🇬 — Snacks, souvenirs & little treasures from our trip 🎁' },
+  { src: 'asset/singapore/image3.png', caption: 'Singapore 🇸🇬 — Dancing, laughing, and celebrating together 🎉' },
   { src: 'asset/vietname/IMG_0236.jpg', caption: 'Vietnam 🇻🇳 — Romantic dinner overlooking the sparkling city lights 🌃' },
   { src: 'asset/vietname/IMG_0180.jpg', caption: 'Vietnam 🇻🇳 — Brunch & coffee date together at Soko ☕' },
   { src: 'asset/vietname/IMG_0225.jpg', caption: 'Vietnam 🇻🇳 — Joyrides and endless laughter on the road 🚗' },
 ];
 
+function showLightboxPhoto(i) {
+  lightboxIndex = (i + photoData.length) % photoData.length;
+  const shot = photoData[lightboxIndex];
+  lightboxImg.src = shot.src;
+  lightboxImg.alt = shot.caption;
+  lightboxCap.textContent = shot.caption;
+  if (lightboxCount) lightboxCount.textContent = `${lightboxIndex + 1} / ${photoData.length}`;
+}
+
 function openLightbox(i) {
-  lightboxImg.src     = photoData[i].src;
-  lightboxImg.alt     = photoData[i].caption;
-  lightboxCap.textContent = photoData[i].caption;
+  showLightboxPhoto(i);
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -762,13 +878,92 @@ function closeLightbox() {
 }
 
 document.querySelectorAll('.photo-card').forEach((card, i) => {
-  card.addEventListener('click', () => openLightbox(i));
-  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(i); });
+  card.addEventListener('click', e => {
+    e.stopPropagation();
+    openLightbox(i);
+  });
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      openLightbox(i);
+    }
+  });
 });
 lightboxClose.addEventListener('click', closeLightbox);
+if (lightboxPrev) lightboxPrev.addEventListener('click', e => { e.stopPropagation(); showLightboxPhoto(lightboxIndex - 1); });
+if (lightboxNext) lightboxNext.addEventListener('click', e => { e.stopPropagation(); showLightboxPhoto(lightboxIndex + 1); });
 lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft')  showLightboxPhoto(lightboxIndex - 1);
+  if (e.key === 'ArrowRight') showLightboxPhoto(lightboxIndex + 1);
+});
+
+
+/* ──────────────────────────────────────────
+   DESTINATION CARDS — SPOTLIGHT MEMORIES
+────────────────────────────────────────── */
+const destHint = document.getElementById('dest-hint');
+
+function spotlightDestination(card) {
+  document.querySelectorAll('.destination-card').forEach(c => {
+    const on = c === card && !c.classList.contains('is-spotlight');
+    c.classList.toggle('is-spotlight', on);
+    c.setAttribute('aria-pressed', String(on));
+    const secret = c.querySelector('.dest-secret');
+    if (secret) secret.textContent = on ? (c.dataset.memory || '') : '';
+  });
+
+  const active = card.classList.contains('is-spotlight');
+  if (destHint) {
+    destHint.innerHTML = active
+      ? '<span aria-hidden="true">✦</span> Memory unlocked — tap again to dim, or open a photo <span aria-hidden="true">✦</span>'
+      : '<span aria-hidden="true">✦</span> Tap a city card to spotlight the memory · tap any photo to zoom <span aria-hidden="true">✦</span>';
+  }
+
+  if (active) {
+    const rect = card.getBoundingClientRect();
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => spawnSparkle(
+        rect.left + rect.width * Math.random(),
+        rect.top + 40 + Math.random() * 60
+      ), i * 28);
+    }
+  }
+}
+
+document.querySelectorAll('.destination-card.interactive-card').forEach(card => {
+  card.addEventListener('click', e => {
+    if (e.target.closest('.photo-card, .meta-pill')) return;
+    spotlightDestination(card);
+  });
+  card.addEventListener('keydown', e => {
+    if (e.target !== card) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      spotlightDestination(card);
+    }
+  });
+});
+
+document.querySelectorAll('.meta-pill.is-interactive').forEach(pill => {
+  pill.addEventListener('click', e => {
+    e.stopPropagation();
+    pill.classList.add('is-popped');
+    setTimeout(() => pill.classList.remove('is-popped'), 450);
+    const rect = pill.getBoundingClientRect();
+    const emoji = document.createElement('div');
+    emoji.className = 'pill-pop';
+    emoji.textContent = pill.dataset.spark || '✨';
+    emoji.style.cssText = `left:${rect.left + rect.width / 2}px;top:${rect.top}px;`;
+    document.body.appendChild(emoji);
+    setTimeout(() => emoji.remove(), 700);
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => spawnSparkle(rect.left + rect.width / 2, rect.top + rect.height / 2), i * 40);
+    }
+  });
 });
 
 
@@ -780,20 +975,65 @@ document.addEventListener('keydown', e => {
 ────────────────────────────────────────── */
 const envelopeWrapper  = document.getElementById('envelope-wrapper');
 const envelopeClosed   = document.getElementById('envelope-closed');
-const letterRecloseBtn  = document.getElementById('letter-reclose-btn');
+const letterRecloseBtn = document.getElementById('letter-reclose-btn');
 const waxSeal          = document.getElementById('wax-seal');
+const letterTextEl     = document.getElementById('letter-text');
+const letterSigEl      = document.getElementById('letter-sig');
+
+const LETTER_FULL = `Dear Unc.nhii 🌸
+
+Today you step into 19 — and honestly? The world is not ready for you yet.
+
+You carry warmth, laughter, and a kind of magic that is entirely, beautifully yours. Never let anyone dim that spark.
+
+May every candle you blow out be replaced by a dream that comes true. May every wish you whisper find its way back to you.
+
+Here's to 19 years of being absolutely wonderful — and to every beautiful moment still to come. 🥂`;
+
+let letterTypeTimer = null;
+let letterTyping = false;
+
+function typeLetter() {
+  if (!letterTextEl) return;
+  if (letterTypeTimer) clearInterval(letterTypeTimer);
+  letterTyping = true;
+  letterTextEl.textContent = '';
+  letterTextEl.classList.add('is-typing');
+  if (letterSigEl) letterSigEl.hidden = true;
+
+  let i = 0;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    letterTextEl.textContent = LETTER_FULL;
+    letterTextEl.classList.remove('is-typing');
+    if (letterSigEl) letterSigEl.hidden = false;
+    letterTyping = false;
+    return;
+  }
+
+  letterTypeTimer = setInterval(() => {
+    i += 1;
+    letterTextEl.textContent = LETTER_FULL.slice(0, i);
+    if (i >= LETTER_FULL.length) {
+      clearInterval(letterTypeTimer);
+      letterTypeTimer = null;
+      letterTyping = false;
+      letterTextEl.classList.remove('is-typing');
+      if (letterSigEl) letterSigEl.hidden = false;
+    }
+  }, 16);
+}
 
 function openEnvelope() {
   if (!envelopeWrapper || envelopeWrapper.classList.contains('is-open')) return;
 
-  // Burst sparkles from the wax seal
   if (waxSeal && typeof burstFromBtn === 'function') {
     burstFromBtn(waxSeal);
   }
 
   envelopeWrapper.classList.add('is-open');
+  typeLetter();
 
-  // Celebrate with confetti when letter is opened
   if (typeof launchConfetti === 'function') {
     setTimeout(launchConfetti, 250);
   }
@@ -802,6 +1042,16 @@ function openEnvelope() {
 function closeEnvelope(e) {
   if (e) e.stopPropagation();
   if (!envelopeWrapper) return;
+  if (letterTypeTimer) {
+    clearInterval(letterTypeTimer);
+    letterTypeTimer = null;
+  }
+  letterTyping = false;
+  if (letterTextEl) {
+    letterTextEl.textContent = '';
+    letterTextEl.classList.remove('is-typing');
+  }
+  if (letterSigEl) letterSigEl.hidden = true;
   envelopeWrapper.classList.remove('is-open');
 }
 
