@@ -7,9 +7,8 @@
 /* ──────────────────────────────────────────
    SLIDE NAVIGATION
 ────────────────────────────────────────── */
-const TOTAL_SLIDES = 6;
+const TOTAL_SLIDES = 5;
 let currentSlide  = 0;
-let statsAnimated = false;
 let letterRevealed = false;
 let revealed      = false;
 
@@ -85,14 +84,8 @@ function onSlideEnter(n) {
     }));
   }
 
-  // Count-up once on stats slide
-  if (n === 2 && !statsAnimated) {
-    statsAnimated = true;
-    setTimeout(runCountUp, 300);
-  }
-
   // Sparkle the wax seal once on letter slide to invite opening
-  if (n === 5 && !letterRevealed) {
+  if (n === 4 && !letterRevealed) {
     letterRevealed = true;
     setTimeout(() => {
       const seal = document.getElementById('wax-seal');
@@ -179,7 +172,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Hover effect on interactive elements
-document.querySelectorAll('button, a, .photo-card, .wish-card, .stat-box').forEach(el => {
+document.querySelectorAll('button, a, .photo-card, .wish-card, .wax-seal').forEach(el => {
   el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
   el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
 });
@@ -593,31 +586,7 @@ document.addEventListener('keydown', e => {
 });
 
 
-/* ──────────────────────────────────────────
-   COUNT-UP (Stats slide)
-────────────────────────────────────────── */
-function runCountUp() {
-  const now      = new Date();
-  const bday     = new Date(2007, 8, 1);
-  const diffMs   = now - bday;
-  const totalDays = Math.floor(diffMs / 864e5);
 
-  animateNum(document.getElementById('stat-years'),  19,         1800, false);
-  animateNum(document.getElementById('stat-months'), 19 * 12,    2000, false);
-  animateNum(document.getElementById('stat-days'),   totalDays,  2200, true);
-  animateNum(document.getElementById('stat-hours'),  totalDays * 24, 2400, true);
-}
-
-function animateNum(el, target, duration, large) {
-  if (!el) return;
-  const start = performance.now();
-  (function step(now) {
-    const p = Math.min((now - start) / duration, 1);
-    const e = 1 - Math.pow(1 - p, 3);
-    el.textContent = large ? Math.floor(e * target).toLocaleString() : Math.floor(e * target);
-    if (p < 1) requestAnimationFrame(step);
-  })(start);
-}
 
 
 /* ──────────────────────────────────────────
