@@ -1,0 +1,18 @@
+/* tokens.css — Unc.nhii midnight scrapbook */
+:root {
+  --ink: #0B0D12;
+  --ink-soft: #161A22;
+  --fog: #F3EEE6;
+  --paper: #FFFCF7;
+  --blush: #E8A0A8;
+  --blush-deep: #C56B76;
+  --candle: #D4B068;
+  --candle-bright: #F0D48A;
+  --sea: #5E9A9E;
+  --muted: rgba(243, 238, 230, 0.58);
+  --line: rgba(243, 238, 230, 0.14);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --f-display: 'Instrument Serif', Georgia, serif;
+  --f-body: 'Figtree', system-ui, sans-serif;
+}

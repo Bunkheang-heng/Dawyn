@@ -1,0 +1,38 @@
+/* responsive.css — Unc.nhii midnight scrapbook */
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .memory-rail { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .gift-board.is-open { grid-template-columns: 1fr; }
+  .hero-inner { align-items: center; text-align: center; padding-left: 1.5rem; }
+  .hero-cta { justify-content: center; }
+}
+@media (max-width: 600px) {
+  .chapter-inner { padding: 4.5rem 1.1rem 6.8rem; }
+  #music-player { top: 0.75rem; right: 0.75rem; }
+  .music-meta span { display: none; }
+  .edge-nav { width: 36px; height: 36px; font-size: 1.25rem; }
+  #nav-prev { left: 0.45rem; }
+  #nav-next { right: 0.45rem; }
+  .btn-continue {
+    bottom: 2.5rem;
+    right: 0.75rem;
+    padding: 0.62rem 1.1rem;
+    font-size: 0.8rem;
+  }
+  .btn-continue:hover {
+    transform: scale(1.05) translateY(-2px);
+  }
+  #chapter-label { display: none; }
+  .envelope { height: 210px; }
+  .letter { padding: 1.5rem 1.2rem; }
+  .letter-body { font-size: 1.05rem; line-height: 1.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-photo { animation: none !important; }
+}

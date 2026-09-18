@@ -1,0 +1,33 @@
+/* cake.css — Unc.nhii midnight scrapbook */
+/* ── Cake ── */
+.cake-stage {
+  margin: 0.5rem 0 1rem;
+  padding: 0.5rem;
+  border-radius: 24px;
+  transition: transform 0.3s var(--ease-spring);
+}
+.cake-stage:hover { transform: scale(1.03); }
+.cake-svg {
+  filter: drop-shadow(0 18px 40px rgba(197, 107, 118, 0.35));
+  animation: cake-float 3.8s ease-in-out infinite;
+}
+@keyframes cake-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.flame {
+  transform-origin: center bottom;
+  animation: flicker 0.4s ease-in-out infinite;
+}
+.flame:nth-of-type(2) { animation-duration: 0.45s; animation-delay: 0.08s; }
+.flame:nth-of-type(3) { animation-duration: 0.36s; animation-delay: 0.12s; }
+@keyframes flicker {
+  0%, 100% { transform: scaleX(1) scaleY(1); }
+  50% { transform: scaleX(0.88) scaleY(1.12); }
+}
+.cake-stage.is-blown .flame {
+  opacity: 0;
+  transform: scaleY(0);
+  transition: opacity 0.35s, transform 0.35s;
+}
+.cake-stage.is-blown .cake-svg { animation-play-state: paused; }

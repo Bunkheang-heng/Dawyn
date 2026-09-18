@@ -1,0 +1,167 @@
+/* gift.css — Unc.nhii midnight scrapbook */
+/* ── Gift ── */
+.gift-inner { max-width: 920px; }
+.gift-board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  justify-items: center;
+  align-items: start;
+}
+.gift-board.is-open {
+  grid-template-columns: minmax(220px, 0.9fr) minmax(260px, 1.1fr);
+  align-items: center;
+}
+
+.present {
+  position: relative;
+  width: 210px;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  transition: transform 0.4s var(--ease-spring);
+}
+.present:hover { transform: translateY(-6px); }
+.present-body {
+  width: 180px;
+  height: 140px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #E8A0A8, #B85A68);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+.present-body::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 22px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--candle-bright), var(--candle));
+}
+.present-body::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 48%;
+  height: 20px;
+  background: linear-gradient(90deg, var(--candle-bright), var(--candle));
+}
+.present-lid {
+  width: 200px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #F0B4BA, #C56B76);
+  margin-bottom: -6px;
+  z-index: 2;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: transform 0.7s var(--ease-spring), opacity 0.4s;
+  transform-origin: right bottom;
+}
+.present-bow {
+  width: 54px; height: 36px;
+  margin-bottom: -10px;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 30% 50%, var(--candle-bright) 0 10px, transparent 11px),
+    radial-gradient(circle at 70% 50%, var(--candle-bright) 0 10px, transparent 11px),
+    radial-gradient(circle at 50% 55%, var(--candle) 0 8px, transparent 9px);
+  transition: transform 0.7s var(--ease-spring), opacity 0.4s;
+}
+.present-tag {
+  position: relative;
+  z-index: 4;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blush-deep);
+  background: var(--paper);
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.gift-board.is-open .present-lid {
+  transform: translateY(-90px) rotate(-18deg);
+  opacity: 0.85;
+}
+.gift-board.is-open .present-bow {
+  transform: translateY(-100px) rotate(12deg) scale(1.1);
+  opacity: 0.9;
+}
+.gift-board.is-open .present {
+  transform: scale(0.82) translateY(20px);
+  pointer-events: none;
+}
+
+.wish-panel {
+  width: 100%;
+  max-width: 420px;
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.45s ease 0.15s, transform 0.5s var(--ease-spring) 0.15s, visibility 0.45s;
+}
+.gift-board.is-open .wish-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+.wish-live {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--blush);
+  margin-bottom: 1rem;
+  min-height: 2.8em;
+  line-height: 1.4;
+}
+.wish-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.wish {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(243, 238, 230, 0.04);
+  font-size: 1.25rem;
+  transition: transform 0.2s var(--ease-spring), background 0.2s, border-color 0.2s;
+}
+.wish:hover {
+  transform: scale(1.08) translateY(-2px);
+  border-color: rgba(212, 176, 104, 0.5);
+}
+.wish.is-picked {
+  background: rgba(232, 160, 168, 0.2);
+  border-color: var(--blush);
+  animation: wish-pop 0.4s var(--ease-spring);
+}
+@keyframes wish-pop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.wish-note {
+  border-left: 2px solid var(--candle);
+  padding: 0.35rem 0 0.35rem 0.9rem;
+  margin-bottom: 1rem;
+}
+.wish-note p {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--muted);
+}

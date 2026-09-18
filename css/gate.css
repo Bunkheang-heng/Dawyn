@@ -1,0 +1,108 @@
+/* gate.css — Unc.nhii midnight scrapbook */
+/* ── Gate / curtain ── */
+#gate {
+  position: fixed; inset: 0; z-index: 500;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+}
+#gate.is-open {
+  pointer-events: none;
+}
+#gate.is-open .gate-center {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+#gate.is-open .gate-curtain.left {
+  transform: translateX(-102%);
+}
+#gate.is-open .gate-curtain.right {
+  transform: translateX(102%);
+}
+
+.gate-curtain {
+  position: absolute; top: 0; bottom: 0; width: 52%;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(232, 160, 168, 0.18), transparent 55%),
+    linear-gradient(180deg, #12151c 0%, #0B0D12 100%);
+  transition: transform 1.1s var(--ease-out) 0.15s;
+  z-index: 1;
+}
+.gate-curtain.left {
+  left: 0;
+  border-right: 1px solid var(--line);
+  box-shadow: inset -40px 0 80px rgba(0,0,0,0.35);
+}
+.gate-curtain.right {
+  right: 0;
+  border-left: 1px solid var(--line);
+  box-shadow: inset 40px 0 80px rgba(0,0,0,0.35);
+}
+
+.gate-center {
+  position: relative; z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 420px;
+}
+
+.gate-eyebrow,
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--candle);
+  margin-bottom: 1rem;
+}
+
+.gate-title {
+  font-family: var(--f-display);
+  font-size: clamp(2.8rem, 8vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--fog);
+  margin-bottom: 0.85rem;
+}
+
+.gate-sub {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-bottom: 2.2rem;
+}
+
+.btn-seal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.8rem;
+  border-radius: 999px;
+  background: var(--blush-deep);
+  color: var(--paper);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 12px 40px rgba(197, 107, 118, 0.35);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s ease;
+}
+.btn-seal:hover {
+  transform: scale(1.04);
+  box-shadow: 0 16px 48px rgba(197, 107, 118, 0.45);
+}
+.btn-seal:active { transform: scale(0.97); }
+.seal-ring {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--candle-bright);
+  box-shadow: 0 0 0 4px rgba(212, 176, 104, 0.25);
+  animation: seal-pulse 2s ease-in-out infinite;
+}
+@keyframes seal-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(212, 176, 104, 0.2); }
+  50% { box-shadow: 0 0 0 8px rgba(212, 176, 104, 0); }
+}
