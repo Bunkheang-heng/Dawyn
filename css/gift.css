@@ -1,20 +1,23 @@
 /* gift.css — Unc.nhii midnight scrapbook */
-/* ── Gift ── */
-.gift-inner { max-width: 920px; }
+.gift-inner { max-width: 720px; }
 .gift-board {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  justify-items: center;
-  align-items: start;
-}
-.gift-board.is-open {
-  grid-template-columns: minmax(220px, 0.9fr) minmax(260px, 1.1fr);
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
+}
+
+.gift-stage {
+  position: relative;
+  width: min(100%, 420px);
+  height: 360px;
+  display: grid;
+  place-items: center;
 }
 
 .present {
   position: relative;
+  z-index: 2;
   width: 210px;
   height: 230px;
   display: flex;
@@ -93,75 +96,58 @@
   opacity: 0.9;
 }
 .gift-board.is-open .present {
-  transform: scale(0.82) translateY(20px);
+  transform: scale(0.82) translateY(28px);
   pointer-events: none;
 }
 
-.wish-panel {
-  width: 100%;
-  max-width: 420px;
-  background: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 1.25rem;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(16px);
+/* Pink lilies shooting from the box */
+.lily-burst {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease 0.15s, transform 0.5s var(--ease-spring) 0.15s, visibility 0.45s;
+  z-index: 3;
 }
-.gift-board.is-open .wish-panel {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  pointer-events: auto;
+.lily {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: var(--size, 72px);
+  height: var(--size, 72px);
+  margin: calc(var(--size, 72px) / -2) 0 0 calc(var(--size, 72px) / -2);
+  opacity: 0;
+  transform: translate(0, 0) rotate(0deg) scale(0.15);
+  will-change: transform, opacity;
 }
-.wish-live {
-  font-family: var(--f-display);
-  font-style: italic;
-  font-size: 1.15rem;
-  color: var(--blush);
-  margin-bottom: 1rem;
-  min-height: 2.8em;
-  line-height: 1.4;
+.lily svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 8px 14px rgba(180, 70, 100, 0.35));
 }
-.wish-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+.gift-board.is-open .lily {
+  animation: lily-shoot var(--dur, 0.9s) var(--ease-spring) var(--delay, 0s) forwards;
 }
-.wish {
-  width: 48px; height: 48px;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: rgba(243, 238, 230, 0.04);
-  font-size: 1.25rem;
-  transition: transform 0.2s var(--ease-spring), background 0.2s, border-color 0.2s;
+@keyframes lily-shoot {
+  0% {
+    opacity: 0;
+    transform: translate(0, 12px) rotate(0deg) scale(0.12);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform:
+      translate(var(--tx), var(--ty))
+      rotate(var(--rot))
+      scale(var(--scale, 1));
+  }
 }
-.wish:hover {
-  transform: scale(1.08) translateY(-2px);
-  border-color: rgba(212, 176, 104, 0.5);
-}
-.wish.is-picked {
-  background: rgba(232, 160, 168, 0.2);
-  border-color: var(--blush);
-  animation: wish-pop 0.4s var(--ease-spring);
-}
-@keyframes wish-pop {
-  0% { transform: scale(0.9); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
-.wish-note {
-  border-left: 2px solid var(--candle);
-  padding: 0.35rem 0 0.35rem 0.9rem;
-  margin-bottom: 1rem;
-}
-.wish-note p {
-  font-family: var(--f-display);
-  font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.55;
-  color: var(--muted);
+
+@media (prefers-reduced-motion: reduce) {
+  .gift-board.is-open .lily {
+    animation: none;
+    opacity: 1;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--scale, 1));
+  }
 }

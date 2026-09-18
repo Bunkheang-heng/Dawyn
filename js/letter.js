@@ -1,15 +1,13 @@
 import { state } from './state.js';
 import { burst, launchConfetti } from './effects.js';
 
-const LETTER = `Dear Unc.nhii,
+const LETTER = `Dear Toothless Nhi,
 
-Today you step into 19 — and honestly? The world is not ready for you yet.
-
-You carry warmth, laughter, and a kind of magic that is entirely, beautifully yours. Never let anyone dim that spark.
-
-May every candle you blow out be replaced by a dream that comes true. May every wish you whisper find its way back to you.
-
-Here's to 19 years of being absolutely wonderful — and to every beautiful moment still to come.`;
+It’s crazy how we first met back in AUS, but honestly im really glad that we did. Getting to know someone like you have been one of those many little things im truly grateful for. And I know how much warmth and happiness you bring to people around you just by being “you”.
+As you step into 19, I hope this year brings you happiness, good memories, joy, and of course plenty reason to smiles. May the things you’ve been wishing for, all slowly find their way to you. Can can can?
+Andd honestly,  I really hope we see each other again, maybe in Cambodia next time. But hey, like I’ve been saying come as a traveller not as someone who got kidnapped =))) (Cambodia is safe btw im just joking, don’t scare of Cambodia please 🙏). I’d openly welcomed you la.
+Here’s to turning 19 and all the amazing years ahead of you. I hope you have the happiest of the happiest birthday ever and all the amazing years ahead.
+  Happy Birthday again, Nhi. Take care and keep being you. 🌷`;
 
 export function initLetter() {
   const mail = document.getElementById('mail');

@@ -2,9 +2,18 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .memory-rail { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .gift-stage { height: 320px; }
   .gift-board.is-open { grid-template-columns: 1fr; }
-  .hero-inner { align-items: center; text-align: center; padding-left: 1.5rem; }
+  .hero-inner {
+    align-items: center;
+    text-align: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
   .hero-cta { justify-content: center; }
+  .floater.f3, .floater.f5 { display: none; }
+  .floater.f1 { width: 40px; }
+  .floater.f4 { width: 44px; }
 }
 @media (max-width: 600px) {
   .chapter-inner { padding: 4.5rem 1.1rem 6.8rem; }
@@ -35,4 +44,5 @@
     transition-duration: 0.01ms !important;
   }
   .hero-photo { animation: none !important; }
+  .floater { animation: none !important; }
 }

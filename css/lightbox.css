@@ -11,8 +11,10 @@
 }
 #lightbox[hidden] { display: none !important; }
 #lb-img {
-  max-width: min(90vw, 900px);
-  max-height: 78vh;
+  max-width: min(94vw, 1100px);
+  max-height: 86vh;
+  width: auto;
+  height: auto;
   border-radius: 14px;
   object-fit: contain;
   box-shadow: 0 30px 80px rgba(0,0,0,0.55);
