@@ -3,613 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy 19th Birthday, Unc.nhii ✨</title>
-  <meta name="description" content="A magical birthday surprise for Unc.nhii turning 19 — crafted with love.">
+  <title>For Unc.nhii · 19</title>
+  <meta name="description" content="A private birthday scrapbook for Unc.nhii — sealed with love.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="birthday.css">
 </head>
 <body>
 
-  <!-- Custom Cursor -->
-  <div id="cursor" aria-hidden="true"></div>
-  <div id="cursor-dot" aria-hidden="true"></div>
-
-  <!-- Background layers -->
-  <div id="orbs-layer" aria-hidden="true"></div>
-  <div id="sparkle-container" aria-hidden="true"></div>
+  <div id="sparkle-layer" aria-hidden="true"></div>
   <canvas id="canvas-confetti" aria-hidden="true"></canvas>
+  <div id="progress-fuse" aria-hidden="true"></div>
 
-  <!-- Top Progress Bar -->
-  <div id="progress-bar" aria-hidden="true"></div>
-
-  <!-- ── Surprise Screen ── -->
-  <div id="surprise-screen" role="dialog" aria-modal="true" aria-labelledby="surprise-title">
-    <div class="surprise-inner">
-      <span class="surprise-ribbon" aria-hidden="true">🎀</span>
-      <h1 class="surprise-title" id="surprise-title">A Special Surprise</h1>
-      <p class="surprise-sub">For someone who makes every room more beautiful just by being in it</p>
-      <button id="reveal-btn">Open Your Gift ✨</button>
+  <!-- GATE · sealed curtain -->
+  <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-curtain left" aria-hidden="true"></div>
+    <div class="gate-curtain right" aria-hidden="true"></div>
+    <div class="gate-center">
+      <p class="gate-eyebrow">Sealed · September 2026</p>
+      <h1 class="gate-title" id="gate-title">This is for you</h1>
+      <p class="gate-sub">A private scrapbook for the night you turn nineteen.</p>
+      <button type="button" id="gate-open" class="btn-seal">
+        <span class="seal-ring" aria-hidden="true"></span>
+        Break the seal
+      </button>
     </div>
   </div>
 
-  <!-- ── Music Player ── -->
-  <aside id="music-player" role="region" aria-label="Music player">
-    <button id="music-btn" aria-label="Play birthday music" title="Play / Pause">
+  <!-- CHROME -->
+  <aside id="music-player" class="chrome" role="region" aria-label="Music">
+    <button type="button" id="music-btn" aria-label="Play or pause music">
       <span id="music-icon">▶</span>
     </button>
-    <div class="player-info">
-      <div class="player-title">🎵 PSN 2017 Remix</div>
-      <div class="player-sub">BIRTHDAY MUSIC · TIKTOK HIT</div>
-    </div>
-    <div class="equalizer paused" id="equalizer" aria-hidden="true">
-      <span class="eq-bar"></span>
-      <span class="eq-bar"></span>
-      <span class="eq-bar"></span>
-      <span class="eq-bar"></span>
-      <span class="eq-bar"></span>
+    <div class="music-meta">
+      <strong>PSN 2017 Remix</strong>
+      <span>Tonight’s soundtrack</span>
     </div>
   </aside>
 
-  <!-- ── Slide Navigation ── -->
-  <button id="nav-prev" class="nav-arrow" aria-label="Previous slide" disabled>&#8249;</button>
-  <button id="nav-next" class="nav-arrow" aria-label="Next slide">&#8250;</button>
-  <nav id="dot-nav" aria-label="Slide navigation" role="tablist"></nav>
-  <div id="slide-counter" aria-live="polite" aria-atomic="true">1 / 5</div>
+  <nav id="chapter-dots" class="chrome" aria-label="Chapters" role="tablist"></nav>
+  <div id="chapter-label" class="chrome" aria-live="polite">Welcome</div>
 
-  <!-- ── Center Next Button ── -->
-  <div id="center-nav-wrap">
-    <button id="center-next-btn" class="center-next-btn" aria-label="Go to next slide">
-      <span id="center-next-text">Next ✨</span>
-      <span class="center-next-arrow" aria-hidden="true">→</span>
-    </button>
-  </div>
+  <button type="button" id="nav-prev" class="chrome edge-nav" aria-label="Previous chapter" disabled>‹</button>
+  <button type="button" id="nav-next" class="chrome edge-nav" aria-label="Next chapter">›</button>
 
-  <!-- ══════════════════ SLIDES ══════════════════ -->
-  <main id="slides-container">
-    <div id="slides-wrapper">
+  <button type="button" id="continue-btn" class="chrome btn-continue">
+    <span id="continue-text">Continue</span>
+    <span aria-hidden="true">→</span>
+  </button>
 
-      <!-- SLIDE 1 · HERO -->
-      <section class="slide" id="slide-0" data-index="0" aria-label="Welcome">
-        <div class="hero-bg" aria-hidden="true"></div>
-        <div id="floating-emojis" aria-hidden="true"></div>
-        <div class="slide-content center">
-          <span class="badge">September 2026</span>
-          <h1 class="display-name">Unc.nhii</h1>
-          <p class="hero-sub">is turning <em>19</em> today ✨</p>
-          <div class="hero-actions">
-            <button id="confetti-btn" class="primary-btn">🎊 Celebrate!</button>
-            <button id="hero-next-btn" class="primary-btn hero-next-btn">Next Story ✨ →</button>
+  <!-- CHAPTERS -->
+  <main id="deck">
+    <div id="deck-track">
+
+      <!-- 0 · HERO -->
+      <section class="chapter" id="ch-0" data-label="Welcome" aria-label="Welcome">
+        <div class="hero-plane">
+          <img class="hero-photo" src="birthday_hero.jpg" alt="" width="1600" height="900">
+          <div class="hero-veil"></div>
+        </div>
+        <div class="chapter-inner hero-inner">
+          <p class="eyebrow animate-in">Tonight only</p>
+          <h1 class="hero-name animate-in">Unc.nhii</h1>
+          <p class="hero-line animate-in">is turning <span class="age">19</span></p>
+          <div class="hero-cta animate-in">
+            <button type="button" id="celebrate-btn" class="btn-primary">Celebrate</button>
+            <button type="button" id="begin-btn" class="btn-ghost">Begin the story</button>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 2 · TWO MEETINGS: SINGAPORE & VIETNAM -->
-      <section class="slide" id="slide-1" data-index="1" aria-labelledby="gallery-h">
-        <div class="slide-content">
-          <h2 class="slide-heading" id="gallery-h">Two Cities, Two Meetings</h2>
-          <p class="slide-sub">Across borders · Once in Singapore 🇸🇬 &amp; Once in Vietnam 🇻🇳</p>
-          <p class="interact-hint" id="dest-hint">
-            <span aria-hidden="true">✦</span> Tap a city card to spotlight the memory · tap any photo to zoom <span aria-hidden="true">✦</span>
-          </p>
-
-          <div class="destinations-grid">
-
-            <!-- DESTINATION 1: SINGAPORE -->
-            <article class="destination-card interactive-card" id="dest-singapore" tabindex="0"
-                     aria-pressed="false" aria-label="Spotlight Singapore memory"
-                     data-memory="The first hello that turned into a forever story — Singapore, where it all began.">
-              <div class="dest-header">
-                <div class="dest-badge">
-                  <span class="dest-flag">🇸🇬</span>
-                  <span class="dest-country">Singapore</span>
-                </div>
-                <span class="dest-tag">1st Time We Met</span>
-              </div>
-              
-              <div class="dest-photos-tri">
-                <div class="dest-photo-box photo-card tri-main" id="photo-0" role="button" tabindex="0"
-                     aria-label="View photo: Our first meeting in Singapore">
-                  <img src="asset/singapore/image.png" alt="Unc.nhii and brother in Singapore"
-                       width="800" height="1066" loading="lazy">
-                  <div class="photo-overlay">
-                    <p class="photo-caption">Where our story started · Singapore 🇸🇬</p>
-                  </div>
-                  <span class="photo-zoom" aria-hidden="true">⊕</span>
-                </div>
-
-                <div class="tri-side">
-                  <div class="dest-photo-box photo-card tri-sub" id="photo-1" role="button" tabindex="0"
-                       aria-label="View photo: Singapore snacks and souvenirs together">
-                    <img src="asset/singapore/image2.png" alt="Snacks and souvenirs from Singapore" loading="lazy">
-                    <div class="photo-overlay">
-                      <p class="photo-caption">Snacks &amp; souvenirs 🎁</p>
-                    </div>
-                    <span class="photo-zoom" aria-hidden="true">⊕</span>
-                  </div>
-
-                  <div class="dest-photo-box photo-card tri-sub" id="photo-2" role="button" tabindex="0"
-                       aria-label="View photo: Dancing and celebrating in Singapore">
-                    <img src="asset/singapore/image3.png" alt="Dancing and celebrating in Singapore" loading="lazy">
-                    <div class="photo-overlay">
-                      <p class="photo-caption">Dance &amp; cheers 🎉</p>
-                    </div>
-                    <span class="photo-zoom" aria-hidden="true">⊕</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="dest-body">
-                <h3 class="dest-title">The First Chapter 🌟</h3>
-                <p class="dest-desc">Where our journey first started. Smiling together, sharing laughter, and creating an unforgettable memory that started it all.</p>
-                <p class="dest-secret" aria-live="polite"></p>
-                <div class="dest-meta">
-                  <button type="button" class="meta-pill is-interactive" data-spark="🇸🇬">Singapore Meeting</button>
-                  <button type="button" class="meta-pill is-interactive" data-spark="✨">The First Time</button>
-                  <button type="button" class="meta-pill is-interactive" data-spark="💫">Beautiful Beginning</button>
-                </div>
-              </div>
-            </article>
-
-            <!-- DESTINATION 2: VIETNAM -->
-            <article class="destination-card interactive-card" id="dest-vietnam" tabindex="0"
-                     aria-pressed="false" aria-label="Spotlight Vietnam memory"
-                     data-memory="Brunch, coffee, city lights, and laughter that never ran out — Saigon chapter unlocked.">
-              <div class="dest-header">
-                <div class="dest-badge">
-                  <span class="dest-flag">🇻🇳</span>
-                  <span class="dest-country">Vietnam</span>
-                </div>
-                <span class="dest-tag">2nd Time We Met</span>
-              </div>
-              
-              <div class="dest-photos-tri">
-                <div class="dest-photo-box photo-card tri-main" id="photo-3" role="button" tabindex="0"
-                     aria-label="View photo: Dinner overlooking the city skyline in Vietnam">
-                  <img src="asset/vietname/IMG_0236.jpg" alt="Dinner overlooking the city in Vietnam"
-                       loading="lazy">
-                  <div class="photo-overlay">
-                    <p class="photo-caption">City lights &amp; dreams 🌃</p>
-                  </div>
-                  <span class="photo-zoom" aria-hidden="true">⊕</span>
-                </div>
-
-                <div class="tri-side">
-                  <div class="dest-photo-box photo-card tri-sub" id="photo-4" role="button" tabindex="0"
-                       aria-label="View photo: Coffee and brunch in Vietnam">
-                    <img src="asset/vietname/IMG_0180.jpg" alt="Café brunch in Vietnam" loading="lazy">
-                    <div class="photo-overlay">
-                      <p class="photo-caption">Brunch &amp; coffee ☕</p>
-                    </div>
-                    <span class="photo-zoom" aria-hidden="true">⊕</span>
-                  </div>
-
-                  <div class="dest-photo-box photo-card tri-sub" id="photo-5" role="button" tabindex="0"
-                       aria-label="View photo: Laughing in the car in Vietnam">
-                    <img src="asset/vietname/IMG_0225.jpg" alt="Laughing in the car in Vietnam" loading="lazy">
-                    <div class="photo-overlay">
-                      <p class="photo-caption">Road laughs 🚗</p>
-                    </div>
-                    <span class="photo-zoom" aria-hidden="true">⊕</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="dest-body">
-                <h3 class="dest-title">Saigon Adventures 🌸</h3>
-                <p class="dest-desc">Reunited once again across the miles. Delicious brunch, coffee dates, rides filled with non-stop laughter and city night views.</p>
-                <p class="dest-secret" aria-live="polite"></p>
-                <div class="dest-meta">
-                  <button type="button" class="meta-pill is-interactive" data-spark="🇻🇳">Vietnam Meeting</button>
-                  <button type="button" class="meta-pill is-interactive" data-spark="☕">Café &amp; Brunch</button>
-                  <button type="button" class="meta-pill is-interactive" data-spark="🚗">Endless Laughs</button>
-                  <button type="button" class="meta-pill is-interactive" data-spark="🌃">City Night</button>
-                </div>
-              </div>
-            </article>
-
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 3 · CAKE -->
-      <section class="slide" id="slide-2" data-index="2" aria-labelledby="cake-h">
-        <div class="slide-content center">
-          <h2 class="slide-heading" id="cake-h">Make a Wish</h2>
-          <p class="slide-sub">Blow out the candles · then light them again anytime</p>
-          <div class="cake-wrapper" id="cake-wrapper" role="button" tabindex="0"
-               aria-label="Birthday cake — tap to blow out the candles">
-            <svg id="birthday-cake" width="300" height="320" viewBox="0 0 320 340"
-                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Birthday cake with candles">
-              <defs>
-                <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="hsl(330,70%,55%)"/>
-                  <stop offset="100%" stop-color="hsl(330,60%,42%)"/>
-                </linearGradient>
-                <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="hsl(270,60%,50%)"/>
-                  <stop offset="100%" stop-color="hsl(270,50%,38%)"/>
-                </linearGradient>
-                <linearGradient id="cg3" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="hsl(340,80%,62%)"/>
-                  <stop offset="100%" stop-color="hsl(340,70%,48%)"/>
-                </linearGradient>
-                <linearGradient id="fr1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
-                  <stop offset="100%" stop-color="hsl(340,60%,92%)" stop-opacity="0.9"/>
-                </linearGradient>
-                <linearGradient id="fr2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
-                  <stop offset="100%" stop-color="hsl(270,60%,90%)" stop-opacity="0.9"/>
-                </linearGradient>
-                <linearGradient id="fr3" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="white" stop-opacity="0.95"/>
-                  <stop offset="100%" stop-color="hsl(340,60%,92%)" stop-opacity="0.9"/>
-                </linearGradient>
-                <radialGradient id="fg" cx="50%" cy="70%" r="50%">
-                  <stop offset="0%" stop-color="hsl(42,100%,90%)"/>
-                  <stop offset="40%" stop-color="hsl(42,100%,65%)"/>
-                  <stop offset="100%" stop-color="hsl(15,100%,55%)" stop-opacity="0.7"/>
-                </radialGradient>
-              </defs>
-              <ellipse cx="160" cy="310" rx="145" ry="18" fill="hsl(340,30%,80%)" opacity="0.3"/>
-              <rect x="40" y="230" width="240" height="80" rx="16" fill="url(#cg1)"/>
-              <rect x="40" y="230" width="240" height="22" rx="8" fill="url(#fr1)"/>
-              <rect x="70" y="160" width="180" height="75" rx="14" fill="url(#cg2)"/>
-              <rect x="70" y="160" width="180" height="20" rx="8" fill="url(#fr2)"/>
-              <rect x="100" y="100" width="120" height="65" rx="12" fill="url(#cg3)"/>
-              <rect x="100" y="100" width="120" height="18" rx="8" fill="url(#fr3)"/>
-              <circle cx="75"  cy="265" r="5" fill="hsl(42,95%,65%)"  opacity="0.9"/>
-              <circle cx="115" cy="274" r="4" fill="hsl(340,90%,80%)" opacity="0.9"/>
-              <circle cx="155" cy="263" r="5" fill="hsl(270,70%,75%)" opacity="0.9"/>
-              <circle cx="195" cy="273" r="4" fill="hsl(42,95%,65%)"  opacity="0.9"/>
-              <circle cx="235" cy="264" r="5" fill="hsl(340,90%,80%)" opacity="0.9"/>
-              <circle cx="95"  cy="193" r="4" fill="hsl(42,95%,65%)"  opacity="0.9"/>
-              <circle cx="160" cy="197" r="4" fill="hsl(270,70%,75%)" opacity="0.9"/>
-              <circle cx="225" cy="194" r="4" fill="hsl(340,90%,80%)" opacity="0.9"/>
-              <text x="160" y="141" text-anchor="middle"
-                    font-family="Cormorant Garamond, serif" font-size="26"
-                    fill="white" opacity="0.9" font-weight="600">19</text>
-              <rect x="114" y="72" width="12" height="33" rx="4" fill="hsl(340,90%,68%)"/>
-              <ellipse cx="120" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
-              <ellipse id="flame1" cx="120" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
-              <rect x="134" y="72" width="12" height="33" rx="4" fill="hsl(270,70%,65%)"/>
-              <ellipse cx="140" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
-              <ellipse id="flame2" cx="140" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
-              <rect x="154" y="70" width="12" height="35" rx="4" fill="hsl(42,95%,65%)"/>
-              <ellipse cx="160" cy="66" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
-              <ellipse id="flame3" cx="160" cy="59" rx="5" ry="9" fill="url(#fg)" class="flame"/>
-              <rect x="174" y="72" width="12" height="33" rx="4" fill="hsl(200,80%,65%)"/>
-              <ellipse cx="180" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
-              <ellipse id="flame4" cx="180" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
-              <rect x="194" y="72" width="12" height="33" rx="4" fill="hsl(340,90%,68%)"/>
-              <ellipse cx="200" cy="68" rx="5" ry="4" fill="hsl(42,95%,75%)"/>
-              <ellipse id="flame5" cx="200" cy="61" rx="5" ry="9" fill="url(#fg)" class="flame"/>
-            </svg>
-            <p class="interact-hint cake-hint" id="cake-hint" aria-live="polite">
-              <span aria-hidden="true">✦</span> Tap the cake to blow out the candles <span aria-hidden="true">✦</span>
-            </p>
-            <button type="button" class="reset-action-btn" id="cake-relight-btn" hidden
-                    aria-label="Relight the birthday candles">
-              <span>🕯️</span> Relight Candles
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 4 · A SPECIAL BIRTHDAY GIFT -->
-      <section class="slide" id="slide-3" data-index="3" aria-labelledby="gift-h">
-        <div class="slide-content gift-layout">
-          <header class="gift-header">
-            <h2 class="slide-heading" id="gift-h">A Special Gift for You</h2>
-            <p class="slide-sub" id="gift-sub">Unwrap the present · gather every wish from the garden</p>
+      <!-- 1 · MEMORIES -->
+      <section class="chapter" id="ch-1" data-label="Memories" aria-labelledby="mem-h">
+        <div class="chapter-inner memories-inner">
+          <header class="chapter-head">
+            <p class="eyebrow">Two cities</p>
+            <h2 id="mem-h">Where we met</h2>
+            <p class="lede">Singapore first. Vietnam next. Tap a photo to open it.</p>
           </header>
 
-          <div class="gift-showcase" id="gift-showcase">
-
-            <!-- LEFT / STAGE: gift box + blooming bouquet -->
-            <div class="gift-stage">
-              <div class="gift-stage-glow" aria-hidden="true"></div>
-
-              <div class="gift-present" id="gift-present" role="button" tabindex="0"
-                   aria-label="Open birthday gift box for Unc.nhii">
-
-                <!-- Popping Blooming Flower Bouquet -->
-                <div class="gift-flower-bouquet" id="gift-flower-bouquet" aria-label="Interactive Blooming Flower Bouquet">
-                  <svg viewBox="0 0 340 380" width="310" height="350" class="bouquet-svg" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="f-rose-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="hsl(345, 95%, 72%)" />
-                        <stop offset="60%" stop-color="hsl(340, 85%, 58%)" />
-                        <stop offset="100%" stop-color="hsl(335, 90%, 42%)" />
-                      </linearGradient>
-                      <linearGradient id="f-sun-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="hsl(48, 100%, 64%)" />
-                        <stop offset="100%" stop-color="hsl(36, 100%, 48%)" />
-                      </linearGradient>
-                      <linearGradient id="f-tulip-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="hsl(285, 85%, 75%)" />
-                        <stop offset="100%" stop-color="hsl(320, 85%, 52%)" />
-                      </linearGradient>
-                      <linearGradient id="f-leaf-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="hsl(145, 65%, 52%)" />
-                        <stop offset="100%" stop-color="hsl(155, 60%, 32%)" />
-                      </linearGradient>
-                      <filter id="flower-glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="hsla(340, 70%, 50%, 0.35)" />
-                      </filter>
-                    </defs>
-
-                    <g filter="url(#flower-glow)">
-                      <path d="M170,360 Q160,250 170,180" stroke="url(#f-leaf-grad)" stroke-width="7" stroke-linecap="round" fill="none" />
-                      <path d="M170,340 Q110,240 75,185" stroke="url(#f-leaf-grad)" stroke-width="5" stroke-linecap="round" fill="none" />
-                      <path d="M170,340 Q230,240 265,185" stroke="url(#f-leaf-grad)" stroke-width="5" stroke-linecap="round" fill="none" />
-                      <path d="M170,300 Q90,190 60,120" stroke="url(#f-leaf-grad)" stroke-width="4" stroke-linecap="round" fill="none" />
-                      <path d="M170,300 Q250,190 280,120" stroke="url(#f-leaf-grad)" stroke-width="4" stroke-linecap="round" fill="none" />
-
-                      <path d="M140,260 Q80,240 95,280 Q130,270 140,260 Z" fill="url(#f-leaf-grad)" />
-                      <path d="M200,260 Q260,240 245,280 Q210,270 200,260 Z" fill="url(#f-leaf-grad)" />
-                      <path d="M120,200 Q50,180 70,225 Q110,210 120,200 Z" fill="url(#f-leaf-grad)" />
-                      <path d="M220,200 Q290,180 270,225 Q230,210 220,200 Z" fill="url(#f-leaf-grad)" />
-                      <path d="M150,150 Q100,100 130,135 Z" fill="url(#f-leaf-grad)" />
-                      <path d="M190,150 Q240,100 210,135 Z" fill="url(#f-leaf-grad)" />
-
-                      <g id="flower-sunflower" class="interactive-flower" data-name="Golden Sunflower"
-                         data-icon="🌻"
-                         data-msg="Your smile brings warmth, joy, and golden sunshine to every day!"
-                         transform="translate(85, 170)" role="button" tabindex="0" aria-label="Sunflower: Tap to bloom">
-                        <g class="flower-bloom-core">
-                          <ellipse cx="0" cy="-28" rx="8" ry="16" fill="url(#f-sun-grad)" />
-                          <ellipse cx="20" cy="-20" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(45, 20, -20)" />
-                          <ellipse cx="28" cy="0" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(90, 28, 0)" />
-                          <ellipse cx="20" cy="20" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(135, 20, 20)" />
-                          <ellipse cx="0" cy="28" rx="8" ry="16" fill="url(#f-sun-grad)" />
-                          <ellipse cx="-20" cy="20" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(45, -20, 20)" />
-                          <ellipse cx="-28" cy="0" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(90, -28, 0)" />
-                          <ellipse cx="-20" cy="-20" rx="8" ry="16" fill="url(#f-sun-grad)" transform="rotate(135, -20, -20)" />
-                          <circle cx="0" cy="0" r="16" fill="hsl(25, 65%, 26%)" />
-                          <circle cx="0" cy="0" r="12" fill="none" stroke="hsl(45, 95%, 60%)" stroke-dasharray="2 3" stroke-width="2" />
-                        </g>
-                      </g>
-
-                      <g id="flower-peony" class="interactive-flower" data-name="Royal Peony"
-                         data-icon="🌸"
-                         data-msg="May every sweet dream in your heart blossom into a reality!"
-                         transform="translate(255, 170)" role="button" tabindex="0" aria-label="Peony: Tap to bloom">
-                        <g class="flower-bloom-core">
-                          <circle cx="0" cy="0" r="32" fill="url(#f-tulip-grad)" />
-                          <path d="M-26,-12 C-30,12 0,30 24,15 C30,-6 15,-24 -4,-26 Z" fill="hsl(300, 80%, 65%)" opacity="0.9" />
-                          <path d="M-18,-10 C-20,8 0,18 18,8 C20,-8 10,-18 -4,-16 Z" fill="hsl(320, 85%, 72%)" />
-                          <circle cx="0" cy="0" r="8" fill="hsl(45, 100%, 75%)" />
-                        </g>
-                      </g>
-
-                      <g id="flower-sakura" class="interactive-flower" data-name="Cherry Blossom"
-                         data-icon="✨"
-                         data-msg="You carry a gentle magic that brings happiness to everyone!"
-                         transform="translate(60, 110)" role="button" tabindex="0" aria-label="Sakura: Tap to bloom">
-                        <g class="flower-bloom-core">
-                          <circle cx="-14" cy="0" r="11" fill="hsl(330, 95%, 86%)" />
-                          <circle cx="14" cy="0" r="11" fill="hsl(330, 95%, 86%)" />
-                          <circle cx="0" cy="-14" r="11" fill="hsl(330, 95%, 86%)" />
-                          <circle cx="-9" cy="11" r="11" fill="hsl(330, 95%, 86%)" />
-                          <circle cx="9" cy="11" r="11" fill="hsl(330, 95%, 86%)" />
-                          <circle cx="0" cy="0" r="5" fill="hsl(45, 100%, 65%)" />
-                        </g>
-                      </g>
-
-                      <g id="flower-tulip" class="interactive-flower" data-name="Coral Tulip"
-                         data-icon="🌷"
-                         data-msg="19 looks absolutely radiant on you — keep shining bright!"
-                         transform="translate(275, 110)" role="button" tabindex="0" aria-label="Tulip: Tap to bloom">
-                        <g class="flower-bloom-core">
-                          <path d="M-18,12 C-24,-16 -6,-30 0,-30 C6,-30 24,-16 18,12 C12,26 -12,26 -18,12 Z" fill="hsl(350, 95%, 70%)" />
-                          <path d="M-8,10 C-12,-10 0,-20 0,-20 C0,-20 12,-10 8,10 Z" fill="hsl(340, 90%, 60%)" />
-                        </g>
-                      </g>
-
-                      <g id="flower-rose" class="interactive-flower" data-name="Velvet Rose"
-                         data-icon="🌹"
-                         data-msg="You are deeply loved, endlessly appreciated, and forever celebrated!"
-                         transform="translate(170, 125)" role="button" tabindex="0" aria-label="Rose: Tap to bloom">
-                        <g class="flower-bloom-core">
-                          <circle cx="0" cy="0" r="46" fill="url(#f-rose-grad)" />
-                          <path d="M-40,-15 C-45,20 0,45 35,25 C45,-8 25,-35 -8,-38 C-30,-35 -40,-15 -40,-15 Z" fill="hsl(340, 85%, 55%)" />
-                          <path d="M-28,-18 C-32,10 0,30 28,12 C32,-12 15,-28 -6,-26 Z" fill="hsl(345, 90%, 62%)" />
-                          <path d="M-18,-12 C-20,6 0,18 18,6 C20,-6 10,-16 -4,-14 Z" fill="hsl(340, 95%, 72%)" />
-                          <circle cx="0" cy="-2" r="7" fill="hsl(335, 90%, 40%)" />
-                        </g>
-                      </g>
-
-                      <g fill="hsl(45, 100%, 80%)" class="bouquet-stars">
-                        <polygon points="170,45 174,56 185,56 176,63 179,74 170,67 161,74 164,63 155,56 166,56" />
-                        <polygon points="105,80 108,87 115,87 109,92 111,99 105,95 99,99 101,92 95,87 102,87" />
-                        <polygon points="235,80 238,87 245,87 239,92 241,99 235,95 229,99 231,92 225,87 232,87" />
-                        <circle cx="135" cy="65" r="3" />
-                        <circle cx="205" cy="65" r="3" />
-                      </g>
-                    </g>
-                  </svg>
-                </div>
-
-                <!-- Gift Box Structure -->
-                <div class="gift-box-wrapper" id="gift-box-wrapper">
-                  <div class="gift-lid-wrap" id="gift-lid-wrap">
-                    <svg viewBox="0 0 280 130" width="280" height="130" class="lid-svg" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="lid-body-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="hsl(340, 90%, 72%)" />
-                          <stop offset="50%" stop-color="hsl(338, 85%, 60%)" />
-                          <stop offset="100%" stop-color="hsl(335, 80%, 48%)" />
-                        </linearGradient>
-                        <linearGradient id="gold-bow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="hsl(45, 100%, 82%)" />
-                          <stop offset="50%" stop-color="hsl(42, 100%, 65%)" />
-                          <stop offset="100%" stop-color="hsl(35, 95%, 48%)" />
-                        </linearGradient>
-                        <filter id="bow-glow" x="-20%" y="-20%" width="140%" height="140%">
-                          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="hsla(340, 70%, 40%, 0.25)" />
-                        </filter>
-                      </defs>
-                      <g filter="url(#bow-glow)">
-                        <path d="M125,65 Q95,95 85,120 Q105,115 125,100 Z" fill="url(#gold-bow-grad)" opacity="0.9" />
-                        <path d="M155,65 Q185,95 195,120 Q175,115 155,100 Z" fill="url(#gold-bow-grad)" opacity="0.9" />
-                        <path d="M140,55 C100,20 60,30 75,60 C90,85 130,68 140,55 Z" fill="url(#gold-bow-grad)" />
-                        <path d="M135,55 C110,35 85,40 92,58 C100,72 125,62 135,55 Z" fill="hsl(38, 90%, 45%)" opacity="0.4" />
-                        <path d="M140,55 C180,20 220,30 205,60 C190,85 150,68 140,55 Z" fill="url(#gold-bow-grad)" />
-                        <path d="M145,55 C170,35 195,40 188,58 C180,72 155,62 145,55 Z" fill="hsl(38, 90%, 45%)" opacity="0.4" />
-                        <ellipse cx="140" cy="56" rx="14" ry="12" fill="url(#gold-bow-grad)" />
-                        <ellipse cx="138" cy="54" rx="11" ry="8" fill="hsl(45, 100%, 85%)" opacity="0.6" />
-                      </g>
-                      <rect x="15" y="70" width="250" height="42" rx="12" fill="url(#lid-body-grad)" />
-                      <rect x="15" y="104" width="250" height="8" rx="4" fill="url(#gold-bow-grad)" opacity="0.9" />
-                      <rect x="127" y="70" width="26" height="42" fill="url(#gold-bow-grad)" />
-                      <path d="M22,76 L258,76" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                  </div>
-
-                  <div class="gift-body-wrap" id="gift-body-wrap">
-                    <svg viewBox="0 0 260 210" width="260" height="210" class="body-svg" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="box-base-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="hsl(340, 85%, 65%)" />
-                          <stop offset="60%" stop-color="hsl(338, 80%, 55%)" />
-                          <stop offset="100%" stop-color="hsl(335, 75%, 44%)" />
-                        </linearGradient>
-                        <linearGradient id="box-gold-ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stop-color="hsl(45, 100%, 80%)" />
-                          <stop offset="50%" stop-color="hsl(42, 95%, 62%)" />
-                          <stop offset="100%" stop-color="hsl(35, 90%, 46%)" />
-                        </linearGradient>
-                        <filter id="box-shadow-f" x="-20%" y="-10%" width="140%" height="140%">
-                          <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="hsla(340, 40%, 25%, 0.28)" />
-                        </filter>
-                      </defs>
-                      <ellipse cx="130" cy="195" rx="115" ry="14" fill="hsla(340, 40%, 20%, 0.2)" />
-                      <g filter="url(#box-shadow-f)">
-                        <rect x="15" y="10" width="230" height="175" rx="16" fill="url(#box-base-grad)" />
-                        <rect x="117" y="10" width="26" height="175" fill="url(#box-gold-ribbon)" />
-                        <rect x="15" y="80" width="230" height="24" fill="url(#box-gold-ribbon)" />
-                        <path d="M22,14 L238,14" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" />
-                      </g>
-                      <g transform="translate(138, 86) rotate(6)">
-                        <line x1="0" y1="-8" x2="10" y2="6" stroke="hsl(42, 90%, 65%)" stroke-width="2" />
-                        <rect x="4" y="6" width="102" height="34" rx="8" fill="#ffffff" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.15))" stroke="hsl(340, 60%, 80%)" stroke-width="1.5" />
-                        <circle cx="12" cy="23" r="3" fill="hsl(340, 60%, 75%)" />
-                        <text x="22" y="27" font-family="'DM Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="hsl(340, 80%, 45%)">For: Unc.nhii 🌸</text>
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <p class="gift-tap-hint" id="gift-tap-hint">
-                <span class="hint-sparkle" aria-hidden="true">✦</span>
-                Tap the box to unwrap your gift
-                <span class="hint-sparkle" aria-hidden="true">✦</span>
-              </p>
-              <p class="gift-opened-label" aria-hidden="true">Your garden is open</p>
-            </div>
-
-            <!-- RIGHT / PANEL: wishes + message + actions -->
-            <aside class="gift-wish-panel" id="gift-wish-panel" aria-label="Birthday wishes">
-              <div class="wish-panel-label">Wish Garden</div>
-
-              <div class="flower-speech-bubble" id="flower-speech-bubble" aria-live="polite">
-                <span class="speech-icon" id="speech-icon">🌸</span>
-                <span class="speech-text" id="flower-speech-text">Tap a flower — in the bouquet or below — for a secret wish ✦</span>
-              </div>
-
-              <div class="flower-wish-rail" id="flower-wish-rail" role="group" aria-label="Choose a flower wish">
-                <button type="button" class="wish-chip" data-flower="flower-rose" aria-label="Velvet Rose wish">🌹 Rose</button>
-                <button type="button" class="wish-chip" data-flower="flower-sunflower" aria-label="Sunflower wish">🌻 Sun</button>
-                <button type="button" class="wish-chip" data-flower="flower-peony" aria-label="Peony wish">🌸 Peony</button>
-                <button type="button" class="wish-chip" data-flower="flower-sakura" aria-label="Cherry blossom wish">✨ Sakura</button>
-                <button type="button" class="wish-chip" data-flower="flower-tulip" aria-label="Tulip wish">🌷 Tulip</button>
-              </div>
-
-              <div class="gift-message-scroll" id="gift-message-scroll">
-                <div class="scroll-badge">Special Delivery · 19</div>
-                <h3 class="scroll-title">May Your Life Bloom With Endless Joy</h3>
-                <p class="scroll-text">
-                  Dear Unc.nhii, just like the brightest flowers in spring, you bring warmth, color,
-                  and beauty to everyone around you. May your 19th year blossom with unforgettable adventures,
-                  true happiness, and every dream you hold in your heart.
-                </p>
-              </div>
-
-              <div class="flower-controls-bar" id="flower-controls-bar">
-                <button class="reset-action-btn" id="btn-shower-petals" type="button" aria-label="Shower flower petals">
-                  <span>🌸</span> Petals
+          <div class="memory-rail" id="memory-rail">
+            <article class="memory-card" data-city="sg">
+              <div class="memory-flag">🇸🇬 Singapore · first hello</div>
+              <div class="memory-mosaic">
+                <button type="button" class="shot" data-photo="0" aria-label="Singapore photo 1">
+                  <img src="asset/singapore/image.png" alt="First meeting in Singapore" loading="lazy">
                 </button>
-                <button class="reset-action-btn" id="btn-sparkle-magic" type="button" aria-label="Sprinkle sparkles">
-                  <span>✨</span> Sparkles
+                <button type="button" class="shot" data-photo="1" aria-label="Singapore photo 2">
+                  <img src="asset/singapore/image2.png" alt="Snacks and souvenirs" loading="lazy">
                 </button>
-                <button class="reset-action-btn secondary" id="gift-repack-btn" type="button" aria-label="Close and re-pack the gift box">
-                  <span>🎁</span> Re-wrap
+                <button type="button" class="shot" data-photo="2" aria-label="Singapore photo 3">
+                  <img src="asset/singapore/image3.png" alt="Celebrating in Singapore" loading="lazy">
                 </button>
               </div>
-            </aside>
+              <p class="memory-caption">The first chapter — smiles that started everything.</p>
+            </article>
 
+            <article class="memory-card" data-city="vn">
+              <div class="memory-flag">🇻🇳 Vietnam · reunion</div>
+              <div class="memory-mosaic">
+                <button type="button" class="shot" data-photo="3" aria-label="Vietnam city lights">
+                  <img src="asset/vietname/IMG_0236.jpg" alt="Dinner overlooking the city" loading="lazy">
+                </button>
+                <button type="button" class="shot" data-photo="4" aria-label="Vietnam brunch">
+                  <img src="asset/vietname/IMG_0180.jpg" alt="Brunch and coffee" loading="lazy">
+                </button>
+                <button type="button" class="shot" data-photo="5" aria-label="Vietnam road laughs">
+                  <img src="asset/vietname/IMG_0225.jpg" alt="Laughing in the car" loading="lazy">
+                </button>
+              </div>
+              <p class="memory-caption">Brunch, night lights, and laughter that never ran out.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 5 · LETTER -->
-      <section class="slide" id="slide-4" data-index="4" aria-labelledby="letter-h">
-        <div class="slide-content center">
-          <h2 class="slide-heading" id="letter-h">A Letter for You</h2>
-          <p class="slide-sub" id="letter-subtitle">Sealed with all my heart · open when you're ready</p>
+      <!-- 2 · CAKE -->
+      <section class="chapter" id="ch-2" data-label="Wish" aria-labelledby="cake-h">
+        <div class="chapter-inner center-stack">
+          <header class="chapter-head">
+            <p class="eyebrow">Make a wish</p>
+            <h2 id="cake-h">Blow out the candles</h2>
+            <p class="lede" id="cake-lede">Tap the cake. Wish hard.</p>
+          </header>
 
-          <!-- Interactive Sealed Mail Envelope -->
-          <div class="envelope-wrapper" id="envelope-wrapper">
+          <button type="button" class="cake-stage" id="cake-stage" aria-label="Birthday cake — tap to blow out candles">
+            <svg class="cake-svg" viewBox="0 0 280 300" width="240" height="260" aria-hidden="true">
+              <defs>
+                <linearGradient id="tier" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#F2B8BE"/>
+                  <stop offset="100%" stop-color="#C86B78"/>
+                </linearGradient>
+                <linearGradient id="frost" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFF8F0"/>
+                  <stop offset="100%" stop-color="#F0D9C8"/>
+                </linearGradient>
+                <radialGradient id="flameG" cx="50%" cy="70%" r="50%">
+                  <stop offset="0%" stop-color="#FFF4C2"/>
+                  <stop offset="55%" stop-color="#F0A83A"/>
+                  <stop offset="100%" stop-color="#E85A2A" stop-opacity="0.7"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="140" cy="278" rx="110" ry="12" fill="rgba(0,0,0,0.25)"/>
+              <rect x="40" y="200" width="200" height="70" rx="14" fill="url(#tier)"/>
+              <rect x="40" y="200" width="200" height="18" rx="8" fill="url(#frost)"/>
+              <rect x="65" y="145" width="150" height="60" rx="12" fill="url(#tier)"/>
+              <rect x="65" y="145" width="150" height="16" rx="7" fill="url(#frost)"/>
+              <rect x="95" y="95" width="90" height="55" rx="11" fill="url(#tier)"/>
+              <rect x="95" y="95" width="90" height="14" rx="6" fill="url(#frost)"/>
+              <text x="140" y="130" text-anchor="middle" font-family="Instrument Serif, serif" font-size="22" fill="#FFF8F0">19</text>
+              <g class="candles">
+                <rect x="108" y="68" width="8" height="28" rx="3" fill="#E8C99A"/>
+                <ellipse class="flame" cx="112" cy="60" rx="4" ry="8" fill="url(#flameG)"/>
+                <rect x="136" y="64" width="8" height="32" rx="3" fill="#F0D9C8"/>
+                <ellipse class="flame" cx="140" cy="56" rx="4" ry="9" fill="url(#flameG)"/>
+                <rect x="164" y="68" width="8" height="28" rx="3" fill="#E8C99A"/>
+                <ellipse class="flame" cx="168" cy="60" rx="4" ry="8" fill="url(#flameG)"/>
+              </g>
+            </svg>
+          </button>
+          <button type="button" class="btn-ghost" id="relight-btn" hidden>Relight candles</button>
+        </div>
+      </section>
 
-            <!-- Closed Sealed Envelope -->
-            <div class="envelope-closed" id="envelope-closed" role="button" tabindex="0"
-                 aria-label="Open sealed birthday letter for Unc.nhii">
-              <!-- Wax Seal Shield -->
-              <div class="wax-seal" id="wax-seal">
-                <span class="seal-icon" aria-hidden="true">💌</span>
-                <span class="seal-text">OPEN</span>
+      <!-- 3 · GIFT -->
+      <section class="chapter" id="ch-3" data-label="Gift" aria-labelledby="gift-h">
+        <div class="chapter-inner gift-inner">
+          <header class="chapter-head">
+            <p class="eyebrow">A present</p>
+            <h2 id="gift-h">Unwrap this</h2>
+            <p class="lede" id="gift-lede">Tap the box. Then collect every wish.</p>
+          </header>
+
+          <div class="gift-board" id="gift-board">
+            <button type="button" class="present" id="present" aria-label="Open the gift">
+              <div class="present-bow" aria-hidden="true"></div>
+              <div class="present-lid" aria-hidden="true"></div>
+              <div class="present-body">
+                <span class="present-tag">For Unc.nhii</span>
               </div>
-              <div class="envelope-to">For: Unc.nhii 🌸</div>
+            </button>
+
+            <div class="wish-panel" id="wish-panel">
+              <p class="wish-live" id="wish-live" aria-live="polite">Choose a bloom for a secret wish.</p>
+              <div class="wish-grid" role="group" aria-label="Wishes">
+                <button type="button" class="wish" data-icon="🌹" data-name="Velvet Rose"
+                        data-msg="You are deeply loved, endlessly appreciated, and forever celebrated.">🌹</button>
+                <button type="button" class="wish" data-icon="🌻" data-name="Sunflower"
+                        data-msg="Your smile brings warmth and golden light to every day.">🌻</button>
+                <button type="button" class="wish" data-icon="🌸" data-name="Peony"
+                        data-msg="May every sweet dream in your heart become real.">🌸</button>
+                <button type="button" class="wish" data-icon="✨" data-name="Sakura"
+                        data-msg="You carry a gentle magic that makes people happier.">✨</button>
+                <button type="button" class="wish" data-icon="🌷" data-name="Tulip"
+                        data-msg="Nineteen looks radiant on you — keep shining.">🌷</button>
+              </div>
+              <blockquote class="wish-note">
+                <p>Dear Unc.nhii — may your nineteenth year bloom with adventures, soft days, and every wish you whisper tonight.</p>
+              </blockquote>
+              <button type="button" class="btn-ghost" id="rewrap-btn">Wrap it again</button>
             </div>
-
-            <!-- The Letter (Unfolds when opened) -->
-            <div class="letter-card" id="letter-card">
-              <div class="letter-stamp" aria-hidden="true">Special Delivery ✦ 19</div>
-              <p class="letter-text" id="letter-text"></p>
-              <p class="letter-sig" id="letter-sig" hidden>— With all the love in the universe 💖</p>
-              <button class="reset-action-btn secondary letter-reclose-btn" id="letter-reclose-btn" aria-label="Close letter back into envelope">
-                <span>✉️</span> Reseal Letter
-              </button>
-            </div>
-
-            <!-- Pulsing Tap Hint -->
-            <p class="interact-hint envelope-hint" id="envelope-hint">
-              <span aria-hidden="true">✦</span> Tap the wax seal to open your letter <span aria-hidden="true">✦</span>
-            </p>
-
           </div>
         </div>
       </section>
 
-    </div><!-- /slides-wrapper -->
-  </main><!-- /slides-container -->
+      <!-- 4 · LETTER -->
+      <section class="chapter" id="ch-4" data-label="Letter" aria-labelledby="letter-h">
+        <div class="chapter-inner center-stack">
+          <header class="chapter-head">
+            <p class="eyebrow">Last page</p>
+            <h2 id="letter-h">A letter for you</h2>
+            <p class="lede" id="letter-lede">Tap the seal when you’re ready.</p>
+          </header>
 
-  <!-- Lightbox -->
-  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-    <button id="lightbox-prev" class="lightbox-nav" aria-label="Previous photo">&#8249;</button>
-    <button id="lightbox-close" aria-label="Close photo">&#x2715;</button>
-    <img id="lightbox-img" src="" alt="">
-    <p id="lightbox-caption"></p>
-    <button id="lightbox-next" class="lightbox-nav" aria-label="Next photo">&#8250;</button>
-    <p class="lightbox-counter" id="lightbox-counter" aria-live="polite"></p>
+          <div class="mail" id="mail">
+            <button type="button" class="envelope" id="envelope" aria-label="Open the sealed letter">
+              <span class="wax" aria-hidden="true">19</span>
+              <span class="envelope-to">For Unc.nhii</span>
+            </button>
+
+            <article class="letter" id="letter" hidden>
+              <p class="letter-stamp">Special delivery</p>
+              <p class="letter-body" id="letter-body"></p>
+              <p class="letter-sign" id="letter-sign" hidden>— With all the love in the universe</p>
+              <button type="button" class="btn-ghost" id="reseal-btn">Reseal</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo" hidden>
+    <button type="button" id="lb-close" aria-label="Close">✕</button>
+    <button type="button" id="lb-prev" aria-label="Previous photo">‹</button>
+    <img id="lb-img" src="" alt="">
+    <button type="button" id="lb-next" aria-label="Next photo">›</button>
+    <p id="lb-cap"></p>
+    <p id="lb-count"></p>
   </div>
 
-  <!-- Hidden YouTube Audio Player -->
-  <div id="yt-player-wrap" style="position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+  <div id="yt-wrap" aria-hidden="true">
     <div id="yt-player"></div>
   </div>
 
